@@ -245,7 +245,7 @@ test:webapp:
     - pnpm install --frozen-lockfile
     - apt-get update && apt-get install -y chromium
     - export CHROME_BIN=/usr/bin/chromium
-    - pnpm run test:ci -- --browsers=ChromeHeadlessCI
+    - pnpm run test:ci
   artifacts:
     when: always
     paths:

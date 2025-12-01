@@ -56,6 +56,49 @@ services:
       - EUREKA_INSTANCE_HOSTNAME=api-gateway
       - EUREKA_INSTANCE_PREFER_IP_ADDRESS=false
 
+  postgres-accounts:
+    container_name: willbank-postgres-accounts
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: willbank_accounts
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-accounts-data:/var/lib/postgresql/data
+    networks:
+      - willbank-microservices
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  account-service:
+    container_name: willbank-account-service
+    build: ./services/account-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      postgres-accounts:
+        condition: service_healthy
+    networks:
+      - willbank-microservices
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-accounts:5432/willbank_accounts
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    restart: unless-stopped
+
+volumes:
+  postgres-accounts-data:
+
 networks:
   willbank-microservices:
     driver: bridge

@@ -176,7 +176,7 @@ export default function TransactionsScreen() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.filtersContainer}
       >
-        {filters.map(filter => (
+        {filters.map((filter, index) => (
           <TouchableOpacity
             key={filter.key}
             style={[
@@ -186,6 +186,7 @@ export default function TransactionsScreen() {
                   activeFilter === filter.key ? colors.primary[500] : colors.surface,
                 borderColor:
                   activeFilter === filter.key ? colors.primary[500] : colors.border,
+                marginRight: index < filters.length - 1 ? spacing.sm : 0,
               },
             ]}
             onPress={() => setActiveFilter(filter.key)}
@@ -382,8 +383,9 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     paddingHorizontal: spacing.lg,
-    gap: spacing.sm,
+    paddingRight: spacing.lg,
     marginBottom: spacing.md,
+    alignItems: 'center',
   },
   filterChip: {
     paddingHorizontal: spacing.md,

@@ -3,7 +3,7 @@
 // ============================================
 
 import React, { ReactNode } from 'react';
-import { View, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import { useThemeColors } from '@/presentation/providers/ThemeProvider';
 import { spacing, radius, shadows } from '@/config/theme';
 
@@ -130,46 +130,56 @@ export function AccountCard({
             },
           ]}
         >
-          <View
+          <Text
             style={[
               styles.accountTypeText,
               {
                 color: isPrimary ? colors.white : colors.primary[500],
               },
             ]}
-          />
+          >
+            {accountType}
+          </Text>
         </View>
       </View>
 
       <View style={styles.accountCardContent}>
         <View style={styles.accountInfo}>
-          <View
+          <Text
             style={[
               styles.accountTypeLabel,
               { color: isPrimary ? 'rgba(255,255,255,0.7)' : colors.text.secondary },
             ]}
-          />
-          <View
+          >
+            Numéro de compte
+          </Text>
+          <Text
             style={[
               styles.accountNumberText,
               { color: isPrimary ? colors.white : colors.text.primary },
             ]}
-          />
+          >
+            {maskAccountNumber(accountNumber)}
+          </Text>
         </View>
 
         <View style={styles.balanceContainer}>
-          <View
+          <Text
             style={[
               styles.balanceLabel,
               { color: isPrimary ? 'rgba(255,255,255,0.7)' : colors.text.secondary },
             ]}
-          />
-          <View
+          >
+            Solde disponible
+          </Text>
+          <Text
             style={[
               styles.balanceAmount,
               { color: isPrimary ? colors.white : colors.text.primary },
             ]}
-          />
+          >
+            {formatBalance(balance)} {currency}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>

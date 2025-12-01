@@ -125,7 +125,7 @@ export default function DashboardScreen() {
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={[styles.iconButton, { backgroundColor: colors.surface }]}
-            onPress={() => router.push('/notifications')}
+            onPress={() => router.push('/notifications' as any)}
           >
             <MaterialIcons name="notifications-none" size={24} color={colors.text.primary} />
             {(dashboardData?.unreadNotifications ?? 0) > 0 && (
@@ -210,7 +210,7 @@ export default function DashboardScreen() {
                   borderColor: index === 0 ? 'transparent' : colors.border,
                 },
               ]}
-              onPress={() => router.push(`/accounts/${account.id}`)}
+              onPress={() => router.push(`/accounts/${account.id}` as any)}
             >
               <View style={styles.accountCardHeader}>
                 <View
@@ -294,7 +294,7 @@ export default function DashboardScreen() {
                     borderBottomColor: colors.divider,
                   },
                 ]}
-                onPress={() => router.push(`/transactions/${transaction.id}`)}
+                onPress={() => router.push(`/transactions/${transaction.id}` as any)}
               >
                 <View
                   style={[

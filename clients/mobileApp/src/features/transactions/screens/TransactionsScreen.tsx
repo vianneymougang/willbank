@@ -253,7 +253,7 @@ export default function TransactionsScreen() {
                           borderBottomColor: colors.divider,
                         },
                       ]}
-                      onPress={() => router.push(`/transactions/${transaction.id}`)}
+                      onPress={() => router.push(`/transactions/${transaction.id}` as any)}
                     >
                       <View
                         style={[

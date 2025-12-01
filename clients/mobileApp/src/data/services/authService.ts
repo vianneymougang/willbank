@@ -4,7 +4,7 @@
 
 import { apiClient } from '../api/client';
 import { API_ENDPOINTS } from '../api/endpoints';
-import { User, AuthTokens } from '@/src/core/entities';
+import { User, AuthTokens } from '@/core/entities';
 
 interface LoginRequest {
   email: string;

@@ -187,7 +187,7 @@ export default function RegisterScreen() {
         {/* Terms */}
         <Text style={[styles.terms, { color: colors.text.muted }]}>
           En créant un compte, vous acceptez nos{' '}
-          <Text style={{ color: colors.primary[500] }}>Conditions d'utilisation</Text>
+          <Text style={{ color: colors.primary[500] }}>Conditions d&apos;utilisation</Text>
           {' '}et notre{' '}
           <Text style={{ color: colors.primary[500] }}>Politique de confidentialité</Text>
         </Text>

@@ -4,7 +4,7 @@
 
 import { apiClient } from '../api/client';
 import { API_ENDPOINTS } from '../api/endpoints';
-import { Account, Transaction, DashboardData, User } from '@/src/core/entities';
+import { Account, Transaction, DashboardData, User } from '@/core/entities';
 
 export const dashboardService = {
   async getDashboard(): Promise<DashboardData> {
@@ -130,7 +130,7 @@ export const dashboardService = {
     
     const dashboard = await this.getDashboard();
     if (accountId) {
-      return dashboard.recentTransactions.filter(t => t.accountId === accountId);
+      return dashboard.recentTransactions.filter((t: Transaction) => t.accountId === accountId);
     }
     return dashboard.recentTransactions;
   },

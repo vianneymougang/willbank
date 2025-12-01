@@ -2,7 +2,7 @@
 // WILLBANK - API Client
 // ============================================
 
-import { API_CONFIG } from '@/src/config/constants';
+import { API_CONFIG } from '@/config/constants';
 
 interface RequestConfig {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';

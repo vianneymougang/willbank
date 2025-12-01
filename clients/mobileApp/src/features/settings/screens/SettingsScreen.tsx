@@ -126,7 +126,7 @@ export default function SettingsScreen() {
       {/* Profile Card */}
       <TouchableOpacity
         style={[styles.profileCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-        onPress={() => router.push('/profile')}
+        onPress={() => router.push('/profile' as any)}
         activeOpacity={0.7}
       >
         <View style={[styles.avatar, { backgroundColor: colors.primary[500] }]}>
@@ -155,7 +155,7 @@ export default function SettingsScreen() {
             icon="person"
             title="Informations personnelles"
             subtitle="Nom, email, téléphone"
-            onPress={() => router.push('/profile/edit')}
+            onPress={() => router.push('/profile/edit' as any)}
           />
           <View style={[styles.divider, { backgroundColor: colors.divider }]} />
           <SettingItem
@@ -178,7 +178,7 @@ export default function SettingsScreen() {
             icon="lock"
             title="Mot de passe"
             subtitle="Modifier votre mot de passe"
-            onPress={() => router.push('/settings/password')}
+            onPress={() => router.push('/settings/password' as any)}
           />
           <View style={[styles.divider, { backgroundColor: colors.divider }]} />
           <SettingItem
@@ -200,7 +200,7 @@ export default function SettingsScreen() {
             icon="pin"
             title="Code PIN"
             subtitle="Configurer un code PIN"
-            onPress={() => router.push('/settings/pin')}
+            onPress={() => router.push('/settings/pin' as any)}
           />
         </Card>
       </View>

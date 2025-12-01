@@ -121,7 +121,7 @@ export default function AccountsScreen() {
           <TouchableOpacity
             key={account.id}
             style={[styles.accountCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-            onPress={() => router.push(`/accounts/${account.id}`)}
+            onPress={() => router.push(`/accounts/${account.id}` as any)}
             activeOpacity={0.7}
           >
             <View style={styles.accountCardLeft}>

@@ -1,0 +1,127 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1><i class="pi pi-chart-line"></i> Tableau de bord</h1>
+    <p>Bienvenue sur votre espace WillBank CRM</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <i class="pi pi-users"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Clients</h3>
+        <p class="stat-number">1,234</p>
+        <span class="stat-change positive"><i class="pi pi-arrow-up"></i> +12%</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <i class="pi pi-dollar"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Revenus</h3>
+        <p class="stat-number">€45.2K</p>
+        <span class="stat-change positive"><i class="pi pi-arrow-up"></i> +8%</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <i class="pi pi-file"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Contrats</h3>
+        <p class="stat-number">89</p>
+        <span class="stat-change positive"><i class="pi pi-arrow-up"></i> +5%</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+        <i class="pi pi-check-circle"></i>
+      </div>
+      <div class="stat-content">
+        <h3>Tâches</h3>
+        <p class="stat-number">24</p>
+        <span class="stat-change negative"><i class="pi pi-arrow-down"></i> -3%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="content-left">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header-custom">
+            <i class="pi pi-chart-bar"></i>
+            <span>Activité récente</span>
+          </div>
+        </ng-template>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon" style="background: #667eea;">
+              <i class="pi pi-user-plus"></i>
+            </div>
+            <div class="activity-details">
+              <p class="activity-title">Nouveau client ajouté</p>
+              <small>Il y a 2 heures</small>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background: #f5576c;">
+              <i class="pi pi-file-edit"></i>
+            </div>
+            <div class="activity-details">
+              <p class="activity-title">Contrat modifié</p>
+              <small>Il y a 5 heures</small>
+            </div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon" style="background: #00f2fe;">
+              <i class="pi pi-check"></i>
+            </div>
+            <div class="activity-details">
+              <p class="activity-title">Tâche complétée</p>
+              <small>Hier</small>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+
+    <div class="content-right">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header-custom">
+            <i class="pi pi-calendar"></i>
+            <span>Événements à venir</span>
+          </div>
+        </ng-template>
+        <div class="events-list">
+          <div class="event-item">
+            <div class="event-date">
+              <span class="day">15</span>
+              <span class="month">DÉC</span>
+            </div>
+            <div class="event-details">
+              <p class="event-title">Réunion client</p>
+              <small>14:00 - 15:30</small>
+            </div>
+          </div>
+          <div class="event-item">
+            <div class="event-date">
+              <span class="day">18</span>
+              <span class="month">DÉC</span>
+            </div>
+            <div class="event-details">
+              <p class="event-title">Présentation projet</p>
+              <small>10:00 - 12:00</small>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

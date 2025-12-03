@@ -1,0 +1,6 @@
+<form [formGroup]="form">
+  <div *ngFor="let field of fields" class="p-field">
+    <label [for]="field.name">{{ field.label }}</label>
+    <input pInputText [id]="field.name" [formControlName]="field.name" [type]="field.type || 'text'">
+  </div>
+</form>

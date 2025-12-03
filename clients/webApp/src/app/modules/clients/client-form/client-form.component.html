@@ -1,0 +1,79 @@
+<div class="client-form-container">
+  <div class="page-header">
+    <h1>
+      <i class="pi" [ngClass]="isEdit ? 'pi-user-edit' : 'pi-user-plus'"></i>
+      {{ isEdit ? 'Éditer Client' : 'Nouveau Client' }}
+    </h1>
+    <button pButton label="Retour" icon="pi pi-arrow-left" class="p-button-outlined" routerLink="/clients"></button>
+  </div>
+
+  <p-card class="form-card">
+    <form [formGroup]="clientForm" (ngSubmit)="save()">
+      <div class="form-section">
+        <h3><i class="pi pi-user"></i> Informations personnelles</h3>
+        <div class="form-grid">
+          <div class="p-field">
+            <label for="nom">
+              Nom <span class="required">*</span>
+            </label>
+            <input pInputText id="nom" formControlName="nom" placeholder="Entrez le nom" />
+            <small class="p-error" *ngIf="clientForm.get('nom')?.invalid && clientForm.get('nom')?.touched">
+              Le nom est requis
+            </small>
+          </div>
+          
+          <div class="p-field">
+            <label for="prenom">
+              Prénom <span class="required">*</span>
+            </label>
+            <input pInputText id="prenom" formControlName="prenom" placeholder="Entrez le prénom" />
+            <small class="p-error" *ngIf="clientForm.get('prenom')?.invalid && clientForm.get('prenom')?.touched">
+              Le prénom est requis
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="pi pi-envelope"></i> Coordonnées</h3>
+        <div class="form-grid">
+          <div class="p-field">
+            <label for="email">
+              Email <span class="required">*</span>
+            </label>
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon"><i class="pi pi-envelope"></i></span>
+              <input pInputText id="email" formControlName="email" placeholder="exemple@email.com" />
+            </div>
+            <small class="p-error" *ngIf="clientForm.get('email')?.invalid && clientForm.get('email')?.touched">
+              Email valide requis
+            </small>
+          </div>
+          
+          <div class="p-field">
+            <label for="telephone">
+              Téléphone
+            </label>
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
+              <input pInputText id="telephone" placeholder="06 12 34 56 78" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="pi pi-map-marker"></i> Adresse</h3>
+        <div class="p-field">
+          <label for="adresse">Adresse complète</label>
+          <textarea pInputTextarea id="adresse" rows="3" placeholder="Entrez l'adresse complète"></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button pButton type="button" label="Annuler" icon="pi pi-times" class="p-button-outlined p-button-secondary" routerLink="/clients"></button>
+        <button pButton type="submit" [label]="isEdit ? 'Mettre à jour' : 'Créer'" icon="pi pi-check" [disabled]="!clientForm.valid" class="save-button"></button>
+      </div>
+    </form>
+  </p-card>
+</div>

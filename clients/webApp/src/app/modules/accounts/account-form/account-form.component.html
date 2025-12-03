@@ -1,0 +1,93 @@
+<div class="account-form-container">
+  <div class="page-header">
+    <h1>
+      <i class="pi" [ngClass]="isEdit ? 'pi-wallet' : 'pi-plus-circle'"></i>
+      {{ isEdit ? 'Éditer Compte' : 'Nouveau Compte' }}
+    </h1>
+    <button pButton label="Retour" icon="pi pi-arrow-left" class="p-button-outlined" routerLink="/accounts"></button>
+  </div>
+
+  <p-card class="form-card">
+    <form [formGroup]="accountForm" (ngSubmit)="save()">
+      <div class="form-section">
+        <h3><i class="pi pi-info-circle"></i> Informations du compte</h3>
+        <div class="form-grid">
+          <div class="p-field">
+            <label for="type">
+              Type de compte <span class="required">*</span>
+            </label>
+            <p-dropdown 
+              id="type" 
+              formControlName="type" 
+              [options]="accountTypes"
+              placeholder="Sélectionnez un type"
+              styleClass="w-full">
+            </p-dropdown>
+            <small class="p-error" *ngIf="accountForm.get('type')?.invalid && accountForm.get('type')?.touched">
+              Le type de compte est requis
+            </small>
+          </div>
+          
+          <div class="p-field">
+            <label for="solde">
+              Solde initial <span class="required">*</span>
+            </label>
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon"></span>
+              <input 
+                pInputText 
+                id="solde" 
+                formControlName="solde" 
+                type="number" 
+                step="0.01"
+                placeholder="0.00" />
+            </div>
+            <small class="p-error" *ngIf="accountForm.get('solde')?.invalid && accountForm.get('solde')?.touched">
+              Le solde initial est requis
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="pi pi-user"></i> Client associé</h3>
+        <div class="p-field">
+          <label for="clientId">
+            Client <span class="required">*</span>
+          </label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-users"></i></span>
+            <input 
+              pInputText 
+              id="clientId" 
+              formControlName="clientId" 
+              type="number"
+              placeholder="ID du client" />
+          </div>
+          <small class="p-error" *ngIf="accountForm.get('clientId')?.invalid && accountForm.get('clientId')?.touched">
+            Le client est requis
+          </small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          pButton 
+          type="button" 
+          label="Annuler" 
+          icon="pi pi-times" 
+          class="p-button-outlined p-button-secondary" 
+          routerLink="/accounts">
+        </button>
+        <button 
+          pButton 
+          type="submit" 
+          [label]="isEdit ? 'Mettre à jour' : 'Créer le compte'" 
+          icon="pi pi-check" 
+          [disabled]="!accountForm.valid" 
+          class="save-button">
+        </button>
+      </div>
+    </form>
+  </p-card>
+</div>

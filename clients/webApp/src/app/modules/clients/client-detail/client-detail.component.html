@@ -1,0 +1,115 @@
+<div class="client-detail-container">
+  <div class="page-header">
+    <h1><i class="pi pi-user"></i> Détails du Client</h1>
+    <div class="header-actions">
+      <button pButton label="Retour" icon="pi pi-arrow-left" class="p-button-outlined" routerLink="/clients"></button>
+      <button pButton label="Éditer" icon="pi pi-pencil" class="p-button-warning" (click)="edit()"></button>
+    </div>
+  </div>
+
+  <div *ngIf="client" class="client-content">
+    <p-card class="client-info-card">
+      <ng-template pTemplate="header">
+        <div class="card-header-custom">
+          <div class="client-avatar">
+            <i class="pi pi-user"></i>
+          </div>
+          <div class="client-name">
+            <h2>{{ client.prenom }} {{ client.nom }}</h2>
+            <p>Client depuis 2024</p>
+          </div>
+        </div>
+      </ng-template>
+      
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-icon" style="background: #667eea;">
+            <i class="pi pi-envelope"></i>
+          </div>
+          <div class="info-content">
+            <label>Email</label>
+            <p>{{ client.email }}</p>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon" style="background: #f5576c;">
+            <i class="pi pi-phone"></i>
+          </div>
+          <div class="info-content">
+            <label>Téléphone</label>
+            <p>{{ client.telephone }}</p>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon" style="background: #4facfe;">
+            <i class="pi pi-map-marker"></i>
+          </div>
+          <div class="info-content">
+            <label>Adresse</label>
+            <p>{{ client.adresse }}</p>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <div class="info-icon" style="background: #43e97b;">
+            <i class="pi pi-id-card"></i>
+          </div>
+          <div class="info-content">
+            <label>ID Client</label>
+            <p>#{{ client.id }}</p>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <div class="additional-info">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="section-header">
+            <i class="pi pi-chart-line"></i>
+            <span>Activité récente</span>
+          </div>
+        </ng-template>
+        <div class="activity-timeline">
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <p class="timeline-title">Compte créé</p>
+              <small>15 Nov 2024</small>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-marker"></div>
+            <div class="timeline-content">
+              <p class="timeline-title">Premier contrat signé</p>
+              <small>20 Nov 2024</small>
+            </div>
+          </div>
+        </div>
+      </p-card>
+
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="section-header">
+            <i class="pi pi-file"></i>
+            <span>Documents</span>
+          </div>
+        </ng-template>
+        <div class="documents-list">
+          <div class="document-item">
+            <i class="pi pi-file-pdf"></i>
+            <span>Contrat_2024.pdf</span>
+            <button pButton icon="pi pi-download" class="p-button-text p-button-sm"></button>
+          </div>
+          <div class="document-item">
+            <i class="pi pi-file-word"></i>
+            <span>Informations_client.docx</span>
+            <button pButton icon="pi pi-download" class="p-button-text p-button-sm"></button>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

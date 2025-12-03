@@ -1,0 +1,11 @@
+<p-card header="Détails du Compte">
+  <div *ngIf="account">
+    <p><strong>Type:</strong> {{ account.type }} (courant/épargne)</p>
+    <p><strong>Solde:</strong> {{ account.solde }}</p>
+    <p><strong>Statut:</strong> {{ account.statut }}</p>
+    <!-- Ajoutez plus de champs -->
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Éditer" icon="pi pi-pencil" (click)="edit()"></p-button>
+  </ng-template>
+</p-card>

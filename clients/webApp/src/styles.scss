@@ -1,0 +1,238 @@
+/* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/themes/saga-blue/theme.css";
+@import "primeng/resources/primeng.min.css";
+@import "primeicons/primeicons.css";
+
+:root {
+  --primary: #1E3A5F;
+  --primary-light: #2d5a8f;
+  --primary-dark: #152a45;
+  --secondary: #00B894;
+  --secondary-light: #00d9a8;
+  --accent: #F39C12;
+  --accent-light: #f5b041;
+  --bg-light: #f8f9fa;
+  --text-dark: #2c3e50;
+  --border-color: #e0e0e0;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+/* Buttons */
+.p-button {
+  background: var(--primary);
+  border-color: var(--primary);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow);
+}
+
+.p-button:hover:enabled {
+  background: var(--primary-light);
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.p-button.p-button-secondary {
+  background: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.p-button.p-button-secondary:hover:enabled {
+  background: var(--secondary-light);
+  border-color: var(--secondary-light);
+}
+
+.p-button.p-button-warning {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.p-button.p-button-warning:hover:enabled {
+  background: var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.p-button-rounded {
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+}
+
+/* Cards */
+.p-card {
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border: none;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+}
+
+.p-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.p-card .p-card-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 12px 12px 0 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.p-card .p-card-body {
+  padding: 2rem;
+}
+
+.p-card .p-card-footer {
+  padding: 1.5rem;
+  background: var(--bg-light);
+  border-radius: 0 0 12px 12px;
+}
+
+/* Tables */
+.p-datatable {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.p-datatable .p-datatable-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white;
+  padding: 1.5rem;
+  font-weight: 600;
+  border: none;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  background: var(--primary);
+  color: white;
+  padding: 1rem;
+  font-weight: 600;
+  border: none;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  transition: all 0.2s ease;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: rgba(30, 58, 95, 0.05);
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  padding: 1rem;
+  border-color: var(--border-color);
+}
+
+/* Forms */
+.p-field {
+  margin-bottom: 1.5rem;
+}
+
+.p-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.p-inputtext {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.p-inputtext:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+}
+
+/* Toolbar */
+.p-toolbar {
+  border-radius: 0;
+  border: none;
+  box-shadow: var(--shadow);
+  padding: 1rem 2rem;
+}
+
+/* Sidebar */
+.p-sidebar {
+  box-shadow: var(--shadow-hover);
+}
+
+.p-panelmenu .p-panelmenu-header > a {
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.p-panelmenu .p-panelmenu-content {
+  border: none;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+  margin-top: 1rem;
+}
+
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.p-3 {
+  padding: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease;
+}

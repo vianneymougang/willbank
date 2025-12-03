@@ -1,0 +1,19 @@
+<p-card header="Envoyer Notification Test">
+  <form [formGroup]="notificationForm" (ngSubmit)="save()">
+    <div class="p-field">
+      <label for="type">Type (email/push)</label>
+      <input pInputText id="type" formControlName="type">
+    </div>
+    <div class="p-field">
+      <label for="destinataire">Destinataire (email/tel)</label>
+      <input pInputText id="destinataire" formControlName="destinataire">
+    </div>
+    <div class="p-field">
+      <label for="message">Message</label>
+      <textarea pInputTextarea id="message" formControlName="message"></textarea>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button type="submit" label="Envoyer" icon="pi pi-send" [disabled]="!notificationForm.valid"></p-button>
+    </ng-template>
+  </form>
+</p-card>

@@ -1,0 +1,17 @@
+<p-card header="Test des Notifications">
+  <form (ngSubmit)="send()">
+    <div class="p-field">
+      <label for="type">Type (email/push)</label>
+      <input pInputText id="type" [(ngModel)]="notification.type" name="type">
+    </div>
+    <div class="p-field">
+      <label for="message">Message</label>
+      <input pInputText id="message" [(ngModel)]="notification.message" name="message">
+    </div>
+    <div class="p-field">
+      <label for="recipient">Destinataire (email/téléphone)</label>
+      <input pInputText id="recipient" [(ngModel)]="notification.recipient" name="recipient">
+    </div>
+    <button pButton type="submit" label="Envoyer"></button>
+  </form>
+</p-card>

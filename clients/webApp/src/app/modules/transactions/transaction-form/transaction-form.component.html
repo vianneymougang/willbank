@@ -1,0 +1,119 @@
+<div class="transaction-form-container">
+  <div class="page-header">
+    <h1>
+      <i class="pi" [ngClass]="isEdit ? 'pi-pencil' : 'pi-plus-circle'"></i>
+      {{ isEdit ? 'Éditer Transaction' : 'Nouvelle Transaction' }}
+    </h1>
+    <button pButton label="Retour" icon="pi pi-arrow-left" class="p-button-outlined" routerLink="/transactions"></button>
+  </div>
+
+  <p-card class="form-card">
+    <form [formGroup]="transactionForm" (ngSubmit)="save()">
+      <div class="form-section">
+        <h3><i class="pi pi-info-circle"></i> Type de transaction</h3>
+        <div class="p-field">
+          <label for="type">
+            Type d'opération <span class="required">*</span>
+          </label>
+          <p-dropdown 
+            id="type" 
+            formControlName="type" 
+            [options]="transactionTypes"
+            placeholder="Sélectionnez un type"
+            styleClass="w-full">
+          </p-dropdown>
+          <small class="p-error" *ngIf="transactionForm.get('type')?.invalid && transactionForm.get('type')?.touched">
+            Le type de transaction est requis
+          </small>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="pi pi-euro"></i> Montant</h3>
+        <div class="p-field">
+          <label for="montant">
+            Montant <span class="required">*</span>
+          </label>
+          <div class="p-inputgroup">
+            <span class="p-inputgroup-addon"><i class="pi pi-euro"></i></span>
+            <input 
+              pInputText 
+              id="montant" 
+              formControlName="montant" 
+              type="number" 
+              step="0.01"
+              placeholder="0.00" />
+          </div>
+          <small class="p-error" *ngIf="transactionForm.get('montant')?.invalid && transactionForm.get('montant')?.touched">
+            Le montant est requis et doit être positif
+          </small>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3><i class="pi pi-phone"></i> Numéros de téléphone</h3>
+        <div class="form-grid">
+          <div class="p-field">
+            <label for="telephoneSource">
+              Téléphone source <span class="required">*</span>
+            </label>
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
+              <input 
+                pInputText 
+                id="telephoneSource" 
+                formControlName="telephoneSource" 
+                type="tel"
+                placeholder="0612345678"
+                maxlength="10" />
+            </div>
+            <small class="p-error" *ngIf="transactionForm.get('telephoneSource')?.invalid && transactionForm.get('telephoneSource')?.touched">
+              Numéro de téléphone requis (10 chiffres)
+            </small>
+            <small class="p-info">Numéro du client émetteur</small>
+          </div>
+          
+          <div class="p-field">
+            <label for="telephoneDest">
+              Téléphone destination
+              <span class="required" *ngIf="transactionForm.get('type')?.value === 'virement'">*</span>
+            </label>
+            <div class="p-inputgroup">
+              <span class="p-inputgroup-addon"><i class="pi pi-phone"></i></span>
+              <input 
+                pInputText 
+                id="telephoneDest" 
+                formControlName="telephoneDest" 
+                type="tel"
+                placeholder="0698765432"
+                maxlength="10" />
+            </div>
+            <small class="p-error" *ngIf="transactionForm.get('telephoneDest')?.invalid && transactionForm.get('telephoneDest')?.touched">
+              Numéro de téléphone invalide (10 chiffres)
+            </small>
+            <small class="p-info">Requis uniquement pour les virements</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button 
+          pButton 
+          type="button" 
+          label="Annuler" 
+          icon="pi pi-times" 
+          class="p-button-outlined p-button-secondary" 
+          routerLink="/transactions">
+        </button>
+        <button 
+          pButton 
+          type="submit" 
+          [label]="isEdit ? 'Mettre à jour' : 'Effectuer la transaction'" 
+          icon="pi pi-check" 
+          [disabled]="!transactionForm.valid" 
+          class="save-button">
+        </button>
+      </div>
+    </form>
+  </p-card>
+</div>

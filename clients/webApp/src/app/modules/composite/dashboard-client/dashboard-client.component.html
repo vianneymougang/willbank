@@ -1,0 +1,21 @@
+<p-card header="Dashboard Client">
+  <div *ngIf="dashboardData">
+    <p><strong>Solde Total:</strong> {{ dashboardData.soldeTotal }}</p>
+    <p-table [value]="dashboardData.comptes" header="Comptes">
+      <ng-template pTemplate="header">
+        <tr><th>Type</th><th>Solde</th></tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-compte>
+        <tr><td>{{ compte.type }}</td><td>{{ compte.solde }}</td></tr>
+      </ng-template>
+    </p-table>
+    <p-table [value]="dashboardData.derniereTransactions" header="Dernières Transactions">
+      <ng-template pTemplate="header">
+        <tr><th>Type</th><th>Montant</th></tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-transaction>
+        <tr><td>{{ transaction.type }}</td><td>{{ transaction.montant }}</td></tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-card>

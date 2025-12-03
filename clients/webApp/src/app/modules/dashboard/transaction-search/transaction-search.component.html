@@ -1,0 +1,24 @@
+<p-card header="Recherche Transactions">
+  <form (ngSubmit)="search()">
+    <div class="p-field">
+      <label for="type">Type</label>
+      <input pInputText id="type" [(ngModel)]="searchParams.type" name="type">
+    </div>
+    <button pButton type="submit" label="Rechercher"></button>
+  </form>
+  <p-table [value]="results" [paginator]="true" [rows]="10">
+    <!-- Table pour résultats -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Type</th>
+        <th>Montant</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-result>
+      <tr>
+        <td>{{ result.type }}</td>
+        <td>{{ result.montant }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>

@@ -1,0 +1,36 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <i class="pi pi-building"></i>
+      <h1>WillBank CRM</h1>
+      <p>Connectez-vous à votre espace</p>
+    </div>
+    
+    <form (ngSubmit)="login()" class="login-form">
+      <div class="p-field">
+        <label for="username">
+          <i class="pi pi-user"></i>
+          Nom d'utilisateur
+        </label>
+        <input pInputText id="username" [(ngModel)]="credentials.username" name="username" placeholder="Entrez votre nom d'utilisateur" required>
+      </div>
+      
+      <div class="p-field">
+        <label for="password">
+          <i class="pi pi-lock"></i>
+          Mot de passe
+        </label>
+        <input pInputText id="password" type="password" [(ngModel)]="credentials.password" name="password" placeholder="Entrez votre mot de passe" required>
+      </div>
+      
+      <button pButton type="submit" label="Se connecter" icon="pi pi-sign-in" class="login-button"></button>
+    </form>
+    
+    <div class="login-footer">
+      <a routerLink="/forgot-password" class="forgot-password-link">
+        Mot de passe oublié ?
+      </a>
+      <small>© 2025 WillBank - Tous droits réservés</small>
+    </div>
+  </div>
+</div>

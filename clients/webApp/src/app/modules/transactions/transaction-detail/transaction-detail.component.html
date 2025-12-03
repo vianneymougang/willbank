@@ -1,0 +1,11 @@
+<p-card header="Détails de la Transaction">
+  <div *ngIf="transaction">
+    <p><strong>Type:</strong> {{ transaction.type }}</p>
+    <p><strong>Montant:</strong> {{ transaction.montant }}</p>
+    <p><strong>Statut:</strong> {{ transaction.statut }}</p>
+    <!-- Ajoutez plus -->
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button label="Éditer" icon="pi pi-pencil" (click)="edit()"></p-button>
+  </ng-template>
+</p-card>

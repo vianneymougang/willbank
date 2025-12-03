@@ -1,0 +1,102 @@
+<div class="layout-wrapper">
+  <p-toolbar class="app-toolbar" [style.background]="primary">
+    <ng-template pTemplate="left">
+      <button pButton type="button" icon="pi pi-bars" class="p-button-text menu-button" (click)="visibleSidebar = true" pRipple></button>
+      <div class="brand">
+        <i class="pi pi-building brand-icon"></i>
+        <span class="brand-text">WillBank CRM</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="right">
+      <button pButton type="button" icon="pi pi-bell" class="p-button-text p-button-rounded notification-button" pBadge value="3" severity="danger"></button>
+      <button pButton type="button" label="Déconnexion" icon="pi pi-sign-out" class="p-button-outlined logout-button" (click)="logout()"></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-sidebar [(visible)]="visibleSidebar" [baseZIndex]="10000" [style]="{'width': '300px'}" [modal]="true" [showCloseIcon]="false">
+    <ng-template pTemplate="header">
+      <div class="custom-sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-logo">
+            <i class="pi pi-building"></i>
+          </div>
+          <div class="brand-info">
+            <h3>WillBank</h3>
+            <span>CRM Platform</span>
+          </div>
+        </div>
+        <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-rounded close-button" (click)="closeSidebar()"></button>
+      </div>
+    </ng-template>
+
+    <!-- User Profile Section -->
+    <div class="sidebar-user-profile">
+      <p-avatar [label]="userInfo.avatar" size="large" shape="circle" [style]="{'background-color': primary, 'color': 'white'}"></p-avatar>
+      <div class="user-info">
+        <h4>{{ userInfo.name }}</h4>
+        <span class="user-role">{{ userInfo.role }}</span>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <span class="nav-section-title">NAVIGATION</span>
+        <ul class="nav-list">
+          <li *ngFor="let item of navItems" class="nav-item">
+            <a [routerLink]="item.route" 
+               routerLinkActive="active" 
+               class="nav-link"
+               (click)="closeSidebar()"
+               pRipple>
+              <i [class]="item.icon"></i>
+              <span class="nav-label">{{ item.label }}</span>
+              <span *ngIf="item.badge" [class]="'nav-badge ' + item.badgeClass">{{ item.badge }}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">SUPPORT</span>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a class="nav-link" pRipple>
+              <i class="pi pi-question-circle"></i>
+              <span class="nav-label">Aide & Support</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" pRipple>
+              <i class="pi pi-book"></i>
+              <span class="nav-label">Documentation</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="upgrade-card">
+        <i class="pi pi-star"></i>
+        <h4>Version Pro</h4>
+        <p>Débloquez toutes les fonctionnalités</p>
+        <button pButton label="Mettre à niveau" class="p-button-sm upgrade-button"></button>
+      </div>
+    </div>
+  </p-sidebar>
+
+  <main class="main-content">
+    <div class="container fade-in">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <footer class="app-footer" [style.background]="primary">
+    <div class="footer-content">
+      <span>© 2025 WillBank - Tous droits réservés</span>
+      <span class="footer-version">v1.0.0</span>
+    </div>
+  </footer>
+</div>

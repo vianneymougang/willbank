@@ -1,0 +1,64 @@
+<div class="client-list-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1><i class="pi pi-users"></i> Gestion des Clients</h1>
+      <p>Gérez et consultez tous vos clients</p>
+    </div>
+    <button pButton label="Nouveau Client" icon="pi pi-plus" class="add-button" (click)="add()"></button>
+  </div>
+
+  <p-card class="table-card">
+    <p-table [value]="clients" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
+             [globalFilterFields]="['nom','prenom','email']" styleClass="p-datatable-striped">
+      <ng-template pTemplate="caption">
+        <div class="table-header">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" placeholder="Rechercher un client..." />
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="nom">
+            Nom <p-sortIcon field="nom"></p-sortIcon>
+          </th>
+          <th pSortableColumn="prenom">
+            Prénom <p-sortIcon field="prenom"></p-sortIcon>
+          </th>
+          <th pSortableColumn="email">
+            Email <p-sortIcon field="email"></p-sortIcon>
+          </th>
+          <th>Téléphone</th>
+          <th style="width: 200px;">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-client>
+        <tr>
+          <td><strong>{{ client.nom }}</strong></td>
+          <td>{{ client.prenom }}</td>
+          <td><i class="pi pi-envelope"></i> {{ client.email }}</td>
+          <td><i class="pi pi-phone"></i> {{ client.telephone }}</td>
+          <td>
+            <div class="action-buttons">
+              <button pButton icon="pi pi-eye" class="p-button-rounded p-button-info p-button-sm" 
+                      pTooltip="Voir" tooltipPosition="top" (click)="view(client.id)"></button>
+              <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-warning p-button-sm" 
+                      pTooltip="Éditer" tooltipPosition="top" (click)="edit(client.id)"></button>
+              <button pButton icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-sm" 
+                      pTooltip="Supprimer" tooltipPosition="top" (click)="delete(client.id)"></button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="empty-message">
+            <i class="pi pi-inbox"></i>
+            <p>Aucun client trouvé</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>

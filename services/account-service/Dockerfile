@@ -1,12 +1,21 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-# Copy the jar file
-COPY target/*.jar app.jar
+COPY pom.xml .
 
-# Expose port
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
+
+RUN mvn clean package
+
+FROM eclipse-temurin:21-jre AS runner
+
+WORKDIR /app
+
+COPY --from=builder ./app/target/account-service-0.0.1-SNAPSHOT.jar ./app.jar
+
 EXPOSE 8082
 
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 import { NotificationListComponent } from './notification-list.component';
+import { ApiService } from '../../../services/api.service';
 
 describe('NotificationListComponent', () => {
   let component: NotificationListComponent;
@@ -8,7 +11,13 @@ describe('NotificationListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotificationListComponent]
+      declarations: [NotificationListComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        ApiService
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
     

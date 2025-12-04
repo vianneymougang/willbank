@@ -1,5 +1,5 @@
 {
-  "name": "willbank-web",
+  "name": "willbank-web-crm",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,8 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:willbank-web-crm": "node dist/willbank-web-crm/server/server.mjs",
-    "test:ci": "ng test --no-watch --code-coverage --browsers=ChromeHeadlessNoSandbox"
+    "serve:ssr:willbank-web-crm": "node dist/willbank-web-crm/server/server.mjs"
   },
   "private": true,
   "dependencies": {

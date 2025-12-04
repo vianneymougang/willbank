@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ClientListComponent } from './client-list.component';
+import { ApiService } from '../../../services/api.service';
 
 describe('ClientListComponent', () => {
   let component: ClientListComponent;
@@ -8,7 +11,13 @@ describe('ClientListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ClientListComponent]
+      declarations: [ClientListComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        ApiService
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
     

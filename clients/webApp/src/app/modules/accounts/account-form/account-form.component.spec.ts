@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
 import { AccountFormComponent } from './account-form.component';
+import { ApiService } from '../../../services/api.service';
 
 describe('AccountFormComponent', () => {
   let component: AccountFormComponent;
@@ -8,7 +11,13 @@ describe('AccountFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountFormComponent]
+      declarations: [AccountFormComponent],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        ApiService
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
     

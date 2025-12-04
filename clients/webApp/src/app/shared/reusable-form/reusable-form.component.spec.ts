@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ReusableFormComponent } from './reusable-form.component';
 
 describe('ReusableFormComponent', () => {
@@ -8,7 +8,8 @@ describe('ReusableFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReusableFormComponent]
+      declarations: [ReusableFormComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
     

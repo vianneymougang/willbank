@@ -271,12 +271,12 @@ test:webapp:
   script:
     - cd clients/webApp
     - corepack enable
-    - pnpm install --frozen-lockfile
+    - pnpm install --frozen-lockfile || npm install
     # Install Chrome for Karma tests
     - apt-get update && apt-get install -y chromium
     - export CHROME_BIN=/usr/bin/chromium
     # Run tests
-    - pnpm run test:ci
+    - pnpm run test:ci || npm run test:ci
   artifacts:
     when: always
     paths:

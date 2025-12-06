@@ -102,7 +102,17 @@ build:account-service:
     - mvn $MAVEN_CLI_OPTS clean package -DskipTests
   only:
     changes:
-      - services/account-service
+      - services/account-service/**/*
+      - .gitlab-ci.yml
+
+build:user-service:
+  <<: *maven_build
+  script:
+    - cd services/user-service
+    - mvn $MAVEN_CLI_OPTS clean package -DskipTests
+  only:
+    changes:
+      - services/user-service/**/*
       - .gitlab-ci.yml
 
 # ==========================================
@@ -261,6 +271,25 @@ test:account-service:
       - services/account-service/**/*
       - .gitlab-ci.yml
 
+test:user-service:
+  <<: *maven_test
+  script:
+    - cd services/user-service
+    - mvn $MAVEN_CLI_OPTS test
+  coverage: "/Total.*?([0-9]{1,3})%/"
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - services/user-service/target/surefire-reports/TEST-*.xml
+    paths:
+      - services/user-service/target/site/jacoco/
+    expire_in: 1 week
+  only:
+    changes:
+      - services/user-service/**/*
+      - .gitlab-ci.yml
+
 # ==========================================
 # TEST STAGE - Angular Web App
 # ==========================================
@@ -400,6 +429,23 @@ docker:account-service:
       - .gitlab-ci.yml
   dependencies:
     - build:account-service
+
+docker:user-service:
+  <<: *docker_build
+  script:
+    - cd services/user-service
+    - docker build -t $REGISTRY/user-service:$IMAGE_TAG -t $REGISTRY/user-service:latest .
+    - docker push $REGISTRY/user-service:$IMAGE_TAG
+    - docker push $REGISTRY/user-service:latest
+  only:
+    refs:
+      - main
+      - develop
+    changes:
+      - services/user-service/**/*
+      - .gitlab-ci.yml
+  dependencies:
+    - build:user-service
 
 docker:webapp:
   <<: *docker_build

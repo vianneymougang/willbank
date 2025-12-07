@@ -1,5 +1,59 @@
 spring:
-  application:
-    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - StripPrefix=0
+
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - StripPrefix=0
+
+            - id: account-service
+              uri: lb://account-service
+              predicates:
+                - Path=/api/accounts/**
+              filters:
+                - StripPrefix=0
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
   config:
-    import: optional:configserver:http://config-server:8888
+    import: optional:configserver:http://localhost:8888
+
+auth-service:
+  url: http://auth-service:8083
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/
+  instance:
+    prefer-ip-address: false
+    hostname: api-gateway
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    com.willbank.apigateway: INFO
+    org.springframework.cloud.gateway: INFO
+    org.springframework.security: WARN
+    org.springframework.security.web.server.authorization: WARN # Silence health check authorization logs

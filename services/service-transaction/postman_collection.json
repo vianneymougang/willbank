@@ -1,0 +1,239 @@
+{
+  "info": {
+    "name": "WillBank - Service Transaction",
+    "description": "Collection complète pour tester le microservice de transactions",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "account1",
+      "value": "ACC001",
+      "type": "string"
+    },
+    {
+      "key": "account2",
+      "value": "ACC002",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Créer Dépôt",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountIdSource\": \"{{account1}}\",\n  \"amount\": 1000.00,\n  \"type\": \"DEPOT\",\n  \"description\": \"Dépôt initial\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/transactions/depot",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "depot"]
+        }
+      }
+    },
+    {
+      "name": "2. Créer Virement Interne",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountIdSource\": \"{{account1}}\",\n  \"accountIdDestination\": \"{{account2}}\",\n  \"amount\": 250.00,\n  \"type\": \"VIREMENT_INTERNE\",\n  \"description\": \"Virement vers compte épargne\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/transactions/virement-interne",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "virement-interne"]
+        }
+      }
+    },
+    {
+      "name": "3. Créer Retrait",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountIdSource\": \"{{account1}}\",\n  \"amount\": 100.00,\n  \"type\": \"RETRAIT\",\n  \"description\": \"Retrait DAB\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/transactions/retrait",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "retrait"]
+        }
+      }
+    },
+    {
+      "name": "4. Historique Transactions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/transactions/history/{{account1}}",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "history", "{{account1}}"]
+        }
+      }
+    },
+    {
+      "name": "5. Recherche par Type (DEPOT)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/transactions/search?accountId={{account1}}&type=DEPOT",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "search"],
+          "query": [
+            {
+              "key": "accountId",
+              "value": "{{account1}}"
+            },
+            {
+              "key": "type",
+              "value": "DEPOT"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Recherche par Statut (COMPLETED)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/transactions/search?accountId={{account1}}&status=COMPLETED",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "search"],
+          "query": [
+            {
+              "key": "accountId",
+              "value": "{{account1}}"
+            },
+            {
+              "key": "status",
+              "value": "COMPLETED"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Recherche Type + Statut",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/transactions/search?accountId={{account1}}&type=VIREMENT_INTERNE&status=COMPLETED",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "search"],
+          "query": [
+            {
+              "key": "accountId",
+              "value": "{{account1}}"
+            },
+            {
+              "key": "type",
+              "value": "VIREMENT_INTERNE"
+            },
+            {
+              "key": "status",
+              "value": "COMPLETED"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Recherche par Période",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/transactions/date-range?accountId={{account1}}&startDate=2024-12-01T00:00:00&endDate=2024-12-31T23:59:59",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "date-range"],
+          "query": [
+            {
+              "key": "accountId",
+              "value": "{{account1}}"
+            },
+            {
+              "key": "startDate",
+              "value": "2024-12-01T00:00:00"
+            },
+            {
+              "key": "endDate",
+              "value": "2024-12-31T23:59:59"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "9. Test Validation - Montant Négatif",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountIdSource\": \"{{account1}}\",\n  \"amount\": -100.00,\n  \"type\": \"DEPOT\",\n  \"description\": \"Test montant négatif\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/transactions/depot",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "depot"]
+        }
+      }
+    },
+    {
+      "name": "10. Test Validation - Même Compte",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountIdSource\": \"{{account1}}\",\n  \"accountIdDestination\": \"{{account1}}\",\n  \"amount\": 100.00,\n  \"type\": \"VIREMENT_INTERNE\",\n  \"description\": \"Test même compte\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/transactions/virement-interne",
+          "host": ["{{base_url}}"],
+          "path": ["api", "transactions", "virement-interne"]
+        }
+      }
+    }
+  ]
+}

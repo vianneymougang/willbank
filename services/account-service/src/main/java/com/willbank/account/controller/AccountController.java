@@ -3,6 +3,7 @@ package com.willbank.account.controller;
 import com.willbank.account.domain.AccountStatus;
 import com.willbank.account.dto.AccountRequest;
 import com.willbank.account.dto.AccountResponse;
+import com.willbank.account.security.AuthorizationService;
 import com.willbank.account.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +27,7 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
-    private final com.willbank.account.security.AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
 
     @PostMapping
     @Operation(summary = "Create a new account", description = "Creates a new bank account for a customer")

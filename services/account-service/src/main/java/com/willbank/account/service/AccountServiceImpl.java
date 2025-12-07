@@ -5,6 +5,7 @@ import com.willbank.account.domain.AccountRepository;
 import com.willbank.account.domain.AccountStatus;
 import com.willbank.account.dto.AccountRequest;
 import com.willbank.account.dto.AccountResponse;
+import com.willbank.account.security.AuthorizationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-    private final com.willbank.account.security.AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
     private final Random random = new Random();
 
     @Override

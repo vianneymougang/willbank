@@ -6,6 +6,7 @@ import com.willbank.account.domain.AccountStatus;
 import com.willbank.account.domain.AccountType;
 import com.willbank.account.dto.AccountRequest;
 import com.willbank.account.dto.AccountResponse;
+import com.willbank.account.security.AuthorizationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,9 @@ class AccountServiceImplTest {
 
     @Mock
     private AccountRepository accountRepository;
+
+    @Mock
+    private AuthorizationService authorizationService;
 
     @InjectMocks
     private AccountServiceImpl accountService;
@@ -78,6 +82,7 @@ class AccountServiceImplTest {
     void getAccountById_ShouldReturnAccount_WhenExists() {
         // Given
         when(accountRepository.findById(1L)).thenReturn(Optional.of(testAccount));
+        when(authorizationService.canAccessAccount(any(Account.class))).thenReturn(true);
 
         // When
         AccountResponse response = accountService.getAccountById(1L);

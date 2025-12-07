@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final com.willbank.account.security.AuthorizationService authorizationService;
     private final Random random = new Random();
 
     @Override
@@ -50,9 +51,15 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(readOnly = true)
     public AccountResponse getAccountById(Long id) {
-        log.debug("Fetching account by ID: {}", id);
+        log.debug("Request to get Account : {}", id);
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
+
+        // Authorization check: ensure user can access this account
+        if (!authorizationService.canAccessAccount(account)) {
+            throw new RuntimeException("Unauthorized access to account: " + id);
+        }
+
         return mapToResponse(account);
     }
 

@@ -23,7 +23,11 @@ import java.util.List;
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
 
     private final WebClient.Builder webClientBuilder;
-    private static final List<String> PUBLIC_PATHS = List.of("/api/auth/", "/actuator/");
+    private static final List<String> PUBLIC_PATHS = List.of(
+            "/api/auth/",
+            "/api/users/register",
+            "/api/users/change-password-first-login",
+            "/actuator/");
 
     public JwtAuthenticationFilter(WebClient.Builder webClientBuilder) {
         this.webClientBuilder = webClientBuilder;

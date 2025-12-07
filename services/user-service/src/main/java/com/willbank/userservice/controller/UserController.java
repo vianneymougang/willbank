@@ -103,4 +103,22 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/change-password-first-login")
+    @Operation(summary = "Change password on first login", description = "Allows customers to change their temporary password. This is a PUBLIC endpoint (no authentication required).")
+    public ResponseEntity<?> changePasswordFirstLogin(
+            @Valid @RequestBody com.willbank.userservice.dto.ChangePasswordRequest request) {
+        log.info("Password change request for: {}", request.getEmail());
+
+        try {
+            userService.changePasswordFirstLogin(request);
+            return ResponseEntity.ok(java.util.Map.of(
+                    "message", "Password changed successfully",
+                    "email", request.getEmail()));
+        } catch (RuntimeException e) {
+            log.error("Password change failed: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(java.util.Map.of(
+                    "error", e.getMessage()));
+        }
+    }
 }

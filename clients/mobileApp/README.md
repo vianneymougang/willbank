@@ -98,7 +98,7 @@ accent: '#F39C12'     // Orange (CTA)
 
 L'application communique avec l'API Gateway Spring Cloud :
 
-```typescript
+```bash
 // Endpoints principaux
 /auth/login          // Connexion
 /auth/register       // Inscription

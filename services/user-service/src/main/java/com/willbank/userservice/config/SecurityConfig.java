@@ -43,8 +43,12 @@ public class SecurityConfig {
                         .requestMatchers("/internal/**").permitAll()
                         // Actuator endpoints
                         .requestMatchers("/actuator/**").permitAll()
+                        // Error endpoint (for proper error responses)
+                        .requestMatchers("/error").permitAll()
                         // Public registration endpoint (can be accessed via API Gateway)
                         .requestMatchers("/api/users/register").permitAll()
+                        // Public password change endpoint for first login
+                        .requestMatchers("/api/users/change-password-first-login").permitAll()
                         // All other API endpoints require authentication
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().authenticated());

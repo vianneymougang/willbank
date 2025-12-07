@@ -101,7 +101,7 @@ Une fois le service démarré, accédez à la documentation interactive :
 
 ### Account
 
-```java
+```python
 {
   "id": 1,
   "customerId": 100,

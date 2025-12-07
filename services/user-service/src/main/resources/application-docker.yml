@@ -6,6 +6,11 @@ spring:
   jpa:
     open-in-view: false
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.willbank.userservice.security: DEBUG
+
 # Application Security Configuration
 app:
   security:

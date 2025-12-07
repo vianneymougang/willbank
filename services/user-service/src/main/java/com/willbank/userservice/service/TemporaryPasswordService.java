@@ -34,6 +34,17 @@ public class TemporaryPasswordService {
         // Generate secure password
         String plainPassword = passwordGenerationService.generateSecurePassword();
 
+        // Store it
+        storePassword(userId, plainPassword);
+
+        return plainPassword;
+    }
+
+    /**
+     * Store an already-generated password (for admin customer creation)
+     */
+    @Transactional
+    public void storePassword(Long userId, String plainPassword) {
         // Encrypt before storage
         String encryptedPassword = encryptionService.encrypt(plainPassword);
 
@@ -51,10 +62,7 @@ public class TemporaryPasswordService {
                 .build();
 
         repository.save(tempPassword);
-        log.info("Created temporary password for user {}, expires at {}", userId, tempPassword.getExpiresAt());
-
-        // Return plaintext (only time it's available)
-        return plainPassword;
+        log.info("Stored temporary password for user {}, expires at {}", userId, tempPassword.getExpiresAt());
     }
 
     /**

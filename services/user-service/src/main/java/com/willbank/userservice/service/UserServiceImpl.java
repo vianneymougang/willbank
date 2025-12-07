@@ -175,7 +175,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePasswordFirstLogin(com.willbank.userservice.dto.ChangePasswordRequest request) {
-        // TODO: Implement password change logic
-        throw new UnsupportedOperationException("Not implemented yet");
+        log.info("First-login password change request for email: {}", request.getEmail());
+
+        // 1. Find user by email
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getEmail()));
+
+        // 2. Verify it's a CUSTOMER (only customers use temporary passwords)
+        if (user.getRole() != com.willbank.userservice.model.UserRole.CUSTOMER) {
+            log.error("Password change attempted for non-customer user: {}", request.getEmail());
+            throw new RuntimeException("This endpoint is only for customer users");
+        }
+
+        // 3. Verify confirm password matches
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("New password and confirmation do not match");
+        }
+
+        // 4. Verify new password is different from old
+        if (request.getOldPassword().equals(request.getNewPassword())) {
+            throw new RuntimeException("New password must be different from temporary password");
+        }
+
+        // 5. Validate new password strength (delegate to PasswordGenerationService if
+        // needed)
+        if (request.getNewPassword().length() < 12) {
+            throw new RuntimeException("Password must be at least 12 characters");
+        }
+
+        // 6. Verify old password matches current password (BCrypt check)
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            log.error("Invalid old password for user: {}", request.getEmail());
+            throw new RuntimeException("Invalid old password");
+        }
+
+        // 7. Update password
+        String hashedNewPassword = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(hashedNewPassword);
+        userRepository.save(user);
+
+        log.info("Password changed successfully for user: {}", request.getEmail());
     }
 }

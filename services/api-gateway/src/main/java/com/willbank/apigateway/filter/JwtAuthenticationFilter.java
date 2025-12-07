@@ -1,5 +1,7 @@
 package com.willbank.apigateway.filter;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -95,6 +97,8 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     // DTO for validation response
+    @Setter
+    @Getter
     public static class ValidationResponse {
         private boolean valid;
         private Long userId;
@@ -104,36 +108,5 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         public ValidationResponse() {
         }
 
-        public boolean isValid() {
-            return valid;
-        }
-
-        public void setValid(boolean valid) {
-            this.valid = valid;
-        }
-
-        public Long getUserId() {
-            return userId;
-        }
-
-        public void setUserId(Long userId) {
-            this.userId = userId;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getRole() {
-            return role;
-        }
-
-        public void setRole(String role) {
-            this.role = role;
-        }
     }
 }

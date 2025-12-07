@@ -18,6 +18,13 @@ spring:
               filters:
                 - StripPrefix=0
 
+            - id: admin-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/admin/**
+              filters:
+                - StripPrefix=0
+
             - id: account-service
               uri: lb://account-service
               predicates:
@@ -28,7 +35,7 @@ spring:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
 
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://config-server:8888
 
 auth-service:
   url: http://auth-service:8083

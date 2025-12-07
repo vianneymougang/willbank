@@ -172,4 +172,10 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
         log.info("User deleted successfully with ID: {}", userId);
     }
+
+    @Override
+    public void changePasswordFirstLogin(com.willbank.userservice.dto.ChangePasswordRequest request) {
+        // TODO: Implement password change logic
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }

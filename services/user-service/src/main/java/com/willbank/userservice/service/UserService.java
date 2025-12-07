@@ -25,4 +25,6 @@ public interface UserService {
     UserResponse updateUserStatus(Long id, UserStatus status);
 
     void deleteUser(Long userId);
+
+    void changePasswordFirstLogin(com.willbank.userservice.dto.ChangePasswordRequest request);
 }

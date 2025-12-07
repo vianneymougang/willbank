@@ -109,7 +109,15 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
-
+		
+		<!-- Bucket4j for Rate Limiting -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j-core</artifactId>
+			<version>8.10.1</version>
+		</dependency>
+		
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

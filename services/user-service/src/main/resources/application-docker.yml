@@ -5,3 +5,8 @@ spring:
     import: optional:configserver:http://config-server:8888
   jpa:
     open-in-view: false
+
+# Application Security Configuration
+app:
+  security:
+    encryption-key: ${TEMP_PASSWORD_ENCRYPTION_KEY:CHANGE_ME_IN_PRODUCTION_32CHARS_MINIMUM}

@@ -1,90 +1,162 @@
-# 🔧 Configuration Backend - WillBank CRM
+# 🔧 Configuration Backend - API Gateway
 
-## 📋 État actuel
+**Document pour le collaborateur Backend**
 
-**Mode Mock** : ❌ DÉSACTIVÉ  
-**Backend** : ✅ REQUIS
+Ce document liste tous les endpoints que l'API Gateway doit exposer pour le frontend Angular WillBank.
 
-L'application est maintenant configurée pour communiquer avec un backend réel.
+---
 
-## 🌐 Configuration de l'URL
+## 📋 Informations Générales
 
-### Fichier de configuration
-`src/environments/environment.ts`
+- **URL API Gateway:** `http://localhost:8080`
+- **Frontend URL:** `http://localhost:4200`
+- **Authentification:** JWT Token (Bearer)
+- **Format:** JSON
+- **CORS:** Autoriser `http://localhost:4200`
 
-```typescript
-export const environment = {
-  production: false,
-  apiGatewayUrl: 'http://localhost:8080'  // ⚠️ À configurer selon votre backend
-};
+---
+
+## 🔐 Authentification
+
+### Headers Requis
+
+```
+Authorization: Bearer <jwt_token>
+Content-Type: application/json
 ```
 
-### Pour la production
-`src/environments/environment.prod.ts`
+### Endpoints Authentification
 
-```typescript
-export const environment = {
-  production: true,
-  apiGatewayUrl: 'https://api.willbank.com'  // URL de production
-};
-```
+#### 1. Login
+```http
+POST /auth/login
+Content-Type: application/json
 
-## 📡 Endpoints attendus
-
-### Base URL
-```
-{apiGatewayUrl}/api/v1
-```
-
-### 🔐 Authentification
-
-#### POST `/auth/login`
-**Request:**
-```json
+Request Body:
 {
   "username": "string",
   "password": "string"
 }
-```
 
-**Response:**
-```json
+Response: 200 OK
 {
-  "token": "jwt-token-string",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   "user": {
     "username": "string",
     "role": "string"
   }
 }
+
+Response: 401 Unauthorized
+{
+  "error": "Invalid credentials"
+}
 ```
 
-### 👥 Clients
+#### 2. Mot de Passe Oublié
+```http
+POST /auth/forgot-password
+Content-Type: application/json
 
-#### GET `/clients`
-Liste tous les clients
+Request Body:
+{
+  "email": "string"
+}
 
-**Response:**
-```json
+Response: 200 OK
+{
+  "message": "Email sent successfully"
+}
+```
+
+#### 3. Réinitialiser Mot de Passe
+```http
+POST /auth/reset-password
+Content-Type: application/json
+
+Request Body:
+{
+  "token": "string",
+  "newPassword": "string"
+}
+
+Response: 200 OK
+{
+  "message": "Password reset successfully"
+}
+```
+
+---
+
+## 👥 Clients (6 endpoints)
+
+### 1. Liste des Clients
+```http
+GET /api/v1/clients
+Authorization: Bearer <token>
+
+Response: 200 OK
 [
   {
     "id": 1,
-    "nom": "string",
-    "prenom": "string",
-    "email": "string",
-    "telephone": "string",
-    "adresse": "string"
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "email": "jean.dupont@email.com",
+    "telephone": "0612345678",
+    "adresse": "123 Rue de Paris"
   }
 ]
 ```
 
-#### GET `/clients/:id`
-Détail d'un client
+### 2. Détail Client
+```http
+GET /api/v1/clients/:id
+Authorization: Bearer <token>
 
-#### POST `/clients`
-Créer un client
+Response: 200 OK
+{
+  "id": 1,
+  "nom": "Dupont",
+  "prenom": "Jean",
+  "email": "jean.dupont@email.com",
+  "telephone": "0612345678",
+  "adresse": "123 Rue de Paris"
+}
 
-**Request:**
-```json
+Response: 404 Not Found
+{
+  "error": "Client not found"
+}
+```
+
+### 3. Recherche Clients
+```http
+GET /api/v1/clients/search?q=<searchText>
+Authorization: Bearer <token>
+
+Query Parameters:
+- q: string (texte de recherche)
+
+Response: 200 OK
+[
+  {
+    "id": 1,
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "email": "jean.dupont@email.com",
+    "telephone": "0612345678",
+    "adresse": "123 Rue de Paris"
+  }
+]
+```
+
+### 4. Créer Client
+```http
+POST /api/v1/clients
+Authorization: Bearer <token>
+Content-Type: application/json
+
+Request Body:
 {
   "nom": "string",
   "prenom": "string",
@@ -92,299 +164,609 @@ Créer un client
   "telephone": "string",
   "adresse": "string"
 }
+
+Response: 201 Created
+{
+  "data": {
+    "id": 123,
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "email": "jean.dupont@email.com",
+    "telephone": "0612345678",
+    "adresse": "123 Rue de Paris"
+  },
+  "notification": {
+    "type": "success",
+    "title": "Client créé",
+    "message": "Le client \"Jean Dupont\" a été créé avec succès",
+    "action": "view-client",
+    "actionData": { "clientId": 123 }
+  }
+}
 ```
 
-#### PUT `/clients/:id`
-Modifier un client
+### 5. Modifier Client
+```http
+PUT /api/v1/clients/:id
+Authorization: Bearer <token>
+Content-Type: application/json
 
-#### DELETE `/clients/:id`
-Supprimer un client
+Request Body:
+{
+  "nom": "string",
+  "prenom": "string",
+  "email": "string",
+  "telephone": "string",
+  "adresse": "string"
+}
 
-### 💰 Comptes
+Response: 200 OK
+{
+  "data": {
+    "id": 123,
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "email": "jean.dupont@email.com",
+    "telephone": "0612345678",
+    "adresse": "123 Rue de Paris"
+  },
+  "notification": {
+    "type": "info",
+    "title": "Client modifié",
+    "message": "Les informations du client ont été mises à jour"
+  }
+}
+```
 
-#### GET `/accounts`
-Liste tous les comptes
+### 6. Supprimer Client
+```http
+DELETE /api/v1/clients/:id
+Authorization: Bearer <token>
 
-**Response:**
-```json
+Response: 200 OK
+{
+  "notification": {
+    "type": "warning",
+    "title": "Client supprimé",
+    "message": "Le client a été supprimé"
+  }
+}
+```
+
+---
+
+## 💳 Comptes (7 endpoints)
+
+### 1. Liste des Comptes
+```http
+GET /api/v1/accounts
+Authorization: Bearer <token>
+
+Response: 200 OK
 [
   {
     "id": 1,
-    "type": "courant|epargne|professionnel",
-    "solde": 0.00,
+    "type": "courant",
+    "solde": 2500.50,
     "clientId": 1,
-    "numeroCompte": "string",
-    "dateCreation": "YYYY-MM-DD"
+    "numeroCompte": "FR7612345678901234567890123",
+    "dateCreation": "2024-01-15"
   }
 ]
 ```
 
-#### GET `/accounts/:id`
-Détail d'un compte
+### 2. Détail Compte
+```http
+GET /api/v1/accounts/:id
+Authorization: Bearer <token>
 
-#### GET `/clients/:clientId/accounts`
-Comptes d'un client
-
-#### POST `/accounts`
-Créer un compte
-
-**Request:**
-```json
+Response: 200 OK
 {
-  "type": "courant|epargne|professionnel",
-  "solde": 0.00,
-  "clientId": 1
+  "id": 1,
+  "type": "courant",
+  "solde": 2500.50,
+  "clientId": 1,
+  "numeroCompte": "FR7612345678901234567890123",
+  "dateCreation": "2024-01-15"
 }
 ```
 
-#### PUT `/accounts/:id`
-Modifier un compte
+### 3. Comptes par Client
+```http
+GET /api/v1/clients/:clientId/accounts
+Authorization: Bearer <token>
 
-#### DELETE `/accounts/:id`
-Supprimer un compte
+Response: 200 OK
+[
+  {
+    "id": 1,
+    "type": "courant",
+    "solde": 2500.50,
+    "clientId": 1,
+    "numeroCompte": "FR7612345678901234567890123",
+    "dateCreation": "2024-01-15"
+  }
+]
+```
 
-### 💸 Transactions
+### 4. Créer Compte
+```http
+POST /api/v1/accounts
+Authorization: Bearer <token>
+Content-Type: application/json
 
-#### GET `/transactions`
-Liste toutes les transactions
+Request Body:
+{
+  "type": "courant|epargne|professionnel",
+  "solde": 0,
+  "clientId": 1
+}
 
-**Response:**
-```json
+Response: 201 Created
+{
+  "data": {
+    "id": 123,
+    "type": "courant",
+    "solde": 0,
+    "clientId": 1,
+    "numeroCompte": "FR7612345678901234567890123",
+    "dateCreation": "2024-12-08"
+  },
+  "notifications": [
+    {
+      "type": "success",
+      "title": "Nouveau compte",
+      "message": "Un compte courant a été créé",
+      "action": "view-account",
+      "actionData": { "accountId": 123 }
+    }
+  ]
+}
+```
+
+### 5. Modifier Compte
+```http
+PUT /api/v1/accounts/:id
+Authorization: Bearer <token>
+Content-Type: application/json
+
+Request Body:
+{
+  "type": "courant|epargne|professionnel",
+  "solde": 2500.50
+}
+
+Response: 200 OK
+{
+  "data": {
+    "id": 123,
+    "type": "courant",
+    "solde": 2500.50,
+    "clientId": 1,
+    "numeroCompte": "FR7612345678901234567890123",
+    "dateCreation": "2024-01-15"
+  },
+  "notification": {
+    "type": "info",
+    "title": "Compte modifié",
+    "message": "Le compte a été mis à jour"
+  }
+}
+```
+
+### 6. Supprimer Compte
+```http
+DELETE /api/v1/accounts/:id
+Authorization: Bearer <token>
+
+Response: 200 OK
+{
+  "notification": {
+    "type": "warning",
+    "title": "Compte supprimé",
+    "message": "Le compte a été supprimé"
+  }
+}
+```
+
+---
+
+## 💸 Transactions (6 endpoints)
+
+### 1. Liste des Transactions
+```http
+GET /api/v1/transactions
+Authorization: Bearer <token>
+
+Response: 200 OK
 [
   {
     "id": 1,
     "type": "virement|depot|retrait",
-    "montant": 0.00,
-    "telephoneSource": "string",
-    "telephoneDest": "string",
-    "date": "YYYY-MM-DD",
+    "montant": 500.00,
+    "telephoneSource": "0612345678",
+    "telephoneDest": "0623456789",
+    "date": "2024-11-25",
     "statut": "completed|pending|failed"
   }
 ]
 ```
 
-#### GET `/transactions/:id`
-Détail d'une transaction
+### 2. Détail Transaction
+```http
+GET /api/v1/transactions/:id
+Authorization: Bearer <token>
 
-#### POST `/transactions/transfer`
-Créer une transaction
-
-**Request:**
-```json
+Response: 200 OK
 {
-  "type": "virement|depot|retrait",
-  "montant": 0.00,
+  "id": 1,
+  "type": "virement",
+  "montant": 500.00,
   "telephoneSource": "0612345678",
-  "telephoneDest": "0623456789"
+  "telephoneDest": "0623456789",
+  "date": "2024-11-25",
+  "statut": "completed"
 }
 ```
 
-#### PUT `/transactions/:id`
-Modifier une transaction
+### 3. Créer Virement
+```http
+POST /api/v1/transactions/transfer
+Authorization: Bearer <token>
+Content-Type: application/json
 
-#### DELETE `/transactions/:id`
-Supprimer une transaction
+Request Body:
+{
+  "type": "virement|depot|retrait",
+  "montant": 500.00,
+  "telephoneSource": "0612345678",
+  "telephoneDest": "0623456789"  // null pour dépôt/retrait
+}
 
-### 🔔 Notifications
+Response: 201 Created
+{
+  "id": 123,
+  "type": "virement",
+  "montant": 500.00,
+  "telephoneSource": "0612345678",
+  "telephoneDest": "0623456789",
+  "date": "2024-12-08",
+  "statut": "completed"
+}
+```
 
-#### GET `/notifications`
-Liste des notifications
+### 4. Modifier Transaction
+```http
+PUT /api/v1/transactions/:id
+Authorization: Bearer <token>
+Content-Type: application/json
 
-**Response:**
-```json
+Request Body:
+{
+  "statut": "completed|pending|failed"
+}
+
+Response: 200 OK
+{
+  "id": 123,
+  "type": "virement",
+  "montant": 500.00,
+  "telephoneSource": "0612345678",
+  "telephoneDest": "0623456789",
+  "date": "2024-12-08",
+  "statut": "completed"
+}
+```
+
+### 5. Supprimer Transaction
+```http
+DELETE /api/v1/transactions/:id
+Authorization: Bearer <token>
+
+Response: 204 No Content
+```
+
+---
+
+## 🔔 Notifications (8 endpoints)
+
+### 1. Liste des Notifications
+```http
+GET /api/v1/notifications
+Authorization: Bearer <token>
+
+Response: 200 OK
 [
   {
     "id": 1,
-    "clientId": 1,
-    "message": "string",
-    "date": "YYYY-MM-DD",
-    "type": "transaction|info|alert",
-    "lu": false
+    "type": "success|info|warning|error",
+    "title": "Client créé",
+    "message": "Le client a été créé avec succès",
+    "date": "2024-12-08T10:30:00Z",
+    "read": false,
+    "action": "view-client",
+    "actionData": { "clientId": 123 }
   }
 ]
 ```
 
-#### POST `/notifications/send`
-Envoyer une notification
+### 2. Notifications Non Lues
+```http
+GET /api/v1/notifications/unread
+Authorization: Bearer <token>
 
-**Request:**
-```json
+Response: 200 OK
+[
+  {
+    "id": 1,
+    "type": "success",
+    "title": "Client créé",
+    "message": "Le client a été créé avec succès",
+    "date": "2024-12-08T10:30:00Z",
+    "read": false
+  }
+]
+```
+
+### 3. Marquer comme Lu
+```http
+PUT /api/v1/notifications/:id/read
+Authorization: Bearer <token>
+
+Response: 200 OK
+```
+
+### 4. Tout Marquer comme Lu
+```http
+PUT /api/v1/notifications/read-all
+Authorization: Bearer <token>
+
+Response: 200 OK
+```
+
+### 5. Supprimer Notification
+```http
+DELETE /api/v1/notifications/:id
+Authorization: Bearer <token>
+
+Response: 204 No Content
+```
+
+### 6. Supprimer Toutes les Lues
+```http
+DELETE /api/v1/notifications/read
+Authorization: Bearer <token>
+
+Response: 200 OK
+```
+
+### 7. Envoyer Notification
+```http
+POST /api/v1/notifications/send
+Authorization: Bearer <token>
+Content-Type: application/json
+
+Request Body:
 {
   "clientId": 1,
-  "message": "string",
-  "type": "transaction|info|alert"
+  "type": "success|info|warning|error",
+  "title": "string",
+  "message": "string"
 }
-```
 
-### 📊 Composite (Endpoints agrégés)
-
-#### GET `/composite/clients/:clientId/dashboard`
-Dashboard client complet
-
-**Response:**
-```json
+Response: 201 Created
 {
-  "client": { /* objet client */ },
-  "accounts": [ /* liste comptes */ ],
-  "totalSolde": 0.00,
-  "nombreComptes": 0,
-  "recentTransactions": [ /* 5 dernières transactions */ ]
+  "id": 123,
+  "clientId": 1,
+  "type": "success",
+  "title": "Notification envoyée",
+  "message": "Votre message",
+  "date": "2024-12-08T10:30:00Z",
+  "read": false
 }
 ```
-
-#### GET `/composite/accounts/:accountId/statement?period=string`
-Relevé de compte
-
-**Response:**
-```json
-{
-  "account": { /* objet compte */ },
-  "period": "string",
-  "transactions": [ /* liste transactions */ ],
-  "soldeDebut": 0.00,
-  "soldeFin": 0.00
-}
-```
-
-#### GET `/composite/transactions/search?type=&dateDebut=&dateFin=`
-Recherche de transactions
-
-**Query params:**
-- `type`: virement|depot|retrait
-- `dateDebut`: YYYY-MM-DD
-- `dateFin`: YYYY-MM-DD
-
-## 🔒 Authentification JWT
-
-### Header requis
-```
-Authorization: Bearer {token}
-```
-
-### Intercepteur configuré
-L'application utilise un intercepteur JWT (`jwt.interceptor.ts`) qui ajoute automatiquement le token à toutes les requêtes.
-
-### Gestion du token
-- **Stockage** : localStorage (`jwt`)
-- **Ajout automatique** : Sur toutes les requêtes API
-- **Suppression** : À la déconnexion
-
-## 🚨 CORS
-
-Votre backend doit autoriser les requêtes depuis :
-```
-http://localhost:4200
-```
-
-### Configuration Spring Boot (exemple)
-```java
-@Configuration
-public class CorsConfig {
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                    .allowedOrigins("http://localhost:4200")
-                    .allowedMethods("GET", "POST", "PUT", "DELETE")
-                    .allowedHeaders("*")
-                    .allowCredentials(true);
-            }
-        };
-    }
-}
-```
-
-## 🧪 Tester la connexion
-
-### 1. Vérifier que le backend est démarré
-```bash
-curl http://localhost:8080/api/v1/clients
-```
-
-### 2. Tester l'authentification
-```bash
-curl -X POST http://localhost:8080/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"password"}'
-```
-
-### 3. Démarrer l'application Angular
-```bash
-ng serve
-```
-
-### 4. Ouvrir le navigateur
-```
-http://localhost:4200
-```
-
-## 🔄 Réactiver le mode mock
-
-Si vous voulez revenir au mode mock pour les tests :
-
-**Dans `src/app/services/auth.service.ts`** :
-```typescript
-const MOCK_MODE = true;
-```
-
-**Dans `src/app/services/api.service.ts`** :
-```typescript
-const MOCK_MODE = true;
-```
-
-## 📝 Gestion des erreurs
-
-L'application gère automatiquement :
-- ✅ Erreurs réseau (affichage dans la console)
-- ✅ Erreurs 401 (redirection vers login)
-- ✅ Erreurs 404 (données non trouvées)
-- ✅ Erreurs 500 (erreur serveur)
-
-### Ajouter un toast pour les erreurs (optionnel)
-
-Installez PrimeNG Toast :
-```bash
-npm install primeng
-```
-
-Ajoutez dans votre composant :
-```typescript
-import { MessageService } from 'primeng/api';
-
-constructor(private messageService: MessageService) {}
-
-showError(message: string) {
-  this.messageService.add({
-    severity: 'error',
-    summary: 'Erreur',
-    detail: message
-  });
-}
-```
-
-## 🎯 Checklist de déploiement
-
-- [ ] Backend démarré et accessible
-- [ ] CORS configuré
-- [ ] Endpoints implémentés
-- [ ] JWT configuré
-- [ ] URL backend configurée dans `environment.ts`
-- [ ] Mode mock désactivé (`MOCK_MODE = false`)
-- [ ] Tests de connexion effectués
-- [ ] Gestion des erreurs vérifiée
-
-## 📞 Support
-
-En cas de problème :
-1. Vérifiez la console du navigateur (F12)
-2. Vérifiez les logs du backend
-3. Vérifiez la configuration CORS
-4. Vérifiez l'URL de l'API Gateway
 
 ---
 
-**Version** : 1.0.0  
-**Date** : Novembre 2024  
-**Mode** : Backend réel ✅
+## 🎯 Composite (3 endpoints)
+
+### 1. Dashboard Client
+```http
+GET /api/v1/composite/clients/:clientId/dashboard
+Authorization: Bearer <token>
+
+Response: 200 OK
+{
+  "client": {
+    "id": 1,
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "email": "jean.dupont@email.com"
+  },
+  "accounts": [
+    {
+      "id": 1,
+      "type": "courant",
+      "solde": 2500.50,
+      "numeroCompte": "FR7612345678901234567890123"
+    }
+  ],
+  "totalSolde": 2500.50,
+  "nombreComptes": 1,
+  "recentTransactions": [
+    {
+      "id": 1,
+      "type": "virement",
+      "montant": 500.00,
+      "date": "2024-11-25"
+    }
+  ]
+}
+```
+
+### 2. Relevé de Compte
+```http
+GET /api/v1/composite/accounts/:accountId/statement?period=<period>
+Authorization: Bearer <token>
+
+Query Parameters:
+- period: string (monthly|quarterly|yearly)
+
+Response: 200 OK
+{
+  "account": {
+    "id": 1,
+    "type": "courant",
+    "solde": 2500.50,
+    "numeroCompte": "FR7612345678901234567890123"
+  },
+  "period": "monthly",
+  "transactions": [
+    {
+      "id": 1,
+      "type": "virement",
+      "montant": 500.00,
+      "date": "2024-11-25"
+    }
+  ],
+  "soldeDebut": 2000.50,
+  "soldeFin": 2500.50
+}
+```
+
+### 3. Recherche Transactions
+```http
+GET /api/v1/composite/transactions/search?type=<type>&dateDebut=<date>&dateFin=<date>
+Authorization: Bearer <token>
+
+Query Parameters:
+- type: string (virement|depot|retrait) - optionnel
+- dateDebut: string (YYYY-MM-DD) - optionnel
+- dateFin: string (YYYY-MM-DD) - optionnel
+
+Response: 200 OK
+[
+  {
+    "id": 1,
+    "type": "virement",
+    "montant": 500.00,
+    "telephoneSource": "0612345678",
+    "telephoneDest": "0623456789",
+    "date": "2024-11-25",
+    "statut": "completed"
+  }
+]
+```
+
+---
+
+## 📊 Format ApiResponse (Recommandé)
+
+Pour les opérations CRUD, il est recommandé d'utiliser ce format pour inclure des notifications automatiques :
+
+```json
+{
+  "data": {
+    // Données de l'entité créée/modifiée
+  },
+  "notification": {
+    "type": "success|info|warning|error",
+    "title": "Titre de la notification",
+    "message": "Message détaillé",
+    "action": "view-client|view-account|view-transaction",
+    "actionData": {
+      "clientId": 123,
+      "accountId": 456,
+      "transactionId": 789
+    }
+  },
+  "notifications": [
+    // Pour plusieurs notifications
+  ]
+}
+```
+
+---
+
+## 🔒 Codes d'Erreur
+
+```
+200 OK              - Succès
+201 Created         - Ressource créée
+204 No Content      - Succès sans contenu
+400 Bad Request     - Données invalides
+401 Unauthorized    - Non authentifié
+403 Forbidden       - Accès refusé
+404 Not Found       - Ressource introuvable
+500 Server Error    - Erreur serveur
+```
+
+---
+
+## 🌐 Configuration CORS
+
+L'API Gateway doit autoriser :
+
+```
+Access-Control-Allow-Origin: http://localhost:4200
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Authorization, Content-Type
+Access-Control-Allow-Credentials: true
+```
+
+---
+
+## 📋 Checklist Backend
+
+- [ ] API Gateway sur le port 8080
+- [ ] CORS configuré pour http://localhost:4200
+- [ ] JWT Token validation
+- [ ] 33 endpoints exposés
+- [ ] Format JSON pour toutes les réponses
+- [ ] Codes d'erreur HTTP standards
+- [ ] Format ApiResponse avec notifications (optionnel)
+- [ ] Logging des requêtes
+- [ ] Rate limiting (optionnel)
+
+---
+
+## 🧪 Tests avec cURL
+
+### Test Login
+```bash
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin"}'
+```
+
+### Test Get Clients
+```bash
+curl -X GET http://localhost:8080/api/v1/clients \
+  -H "Authorization: Bearer <your_token>"
+```
+
+### Test Create Client
+```bash
+curl -X POST http://localhost:8080/api/v1/clients \
+  -H "Authorization: Bearer <your_token>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "email": "jean.dupont@email.com",
+    "telephone": "0612345678",
+    "adresse": "123 Rue de Paris"
+  }'
+```
+
+---
+
+## 📞 Contact
+
+Pour toute question sur les endpoints ou le format des données, contactez l'équipe frontend.
+
+---
+
+*Document créé le 8 Décembre 2025*
+*Frontend: Angular 18*
+*Backend: API Gateway + Microservices*

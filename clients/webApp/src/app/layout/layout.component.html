@@ -1,4 +1,10 @@
 <div class="layout-wrapper">
+  <!-- Loading Spinner Global -->
+  <app-loading></app-loading>
+  
+  <!-- Toast pour les messages d'erreur -->
+  <p-toast position="top-right"></p-toast>
+  
   <p-toolbar class="app-toolbar" [style.background]="primary">
     <ng-template pTemplate="left">
       <button pButton type="button" icon="pi pi-bars" class="p-button-text menu-button" (click)="visibleSidebar = true" pRipple></button>
@@ -6,12 +12,121 @@
         <i class="pi pi-building brand-icon"></i>
         <span class="brand-text">WillBank CRM</span>
       </div>
+      
+      <!-- Actions Rapides intégrées -->
+      <div class="toolbar-actions">
+        <button pButton 
+                label="Nouveau Client" 
+                icon="pi pi-user-plus" 
+                class="p-button-success p-button-sm toolbar-action-btn"
+                routerLink="/clients/new"
+                pRipple></button>
+        <button pButton 
+                label="Nouveau Compte" 
+                icon="pi pi-wallet" 
+                class="p-button-info p-button-sm toolbar-action-btn"
+                routerLink="/accounts/new"
+                pRipple></button>
+        <button pButton 
+                label="Nouvelle Transaction" 
+                icon="pi pi-money-bill" 
+                class="p-button-warning p-button-sm toolbar-action-btn"
+                routerLink="/transactions/new"
+                pRipple></button>
+      </div>
     </ng-template>
     <ng-template pTemplate="right">
-      <button pButton type="button" icon="pi pi-bell" class="p-button-text p-button-rounded notification-button" pBadge value="3" severity="danger"></button>
+      <div class="notification-button-wrapper">
+        <button pButton 
+                type="button" 
+                icon="pi pi-bell" 
+                class="p-button-text p-button-rounded notification-button" 
+                (click)="toggleNotifications()"
+                pTooltip="Notifications"
+                tooltipPosition="bottom"></button>
+        <span class="notification-badge" *ngIf="(unreadCount$ | async) && (unreadCount$ | async)! > 0">
+          {{ unreadCount$ | async }}
+        </span>
+      </div>
       <button pButton type="button" label="Déconnexion" icon="pi pi-sign-out" class="p-button-outlined logout-button" (click)="logout()"></button>
     </ng-template>
   </p-toolbar>
+
+  <!-- Panneau de notifications -->
+  <p-sidebar [(visible)]="notificationsPanelVisible" 
+             position="right" 
+             [style]="{'width': '400px'}"
+             [baseZIndex]="10000"
+             styleClass="notifications-sidebar">
+    <ng-template pTemplate="header">
+      <div class="notifications-header">
+        <h3><i class="pi pi-bell"></i> Notifications</h3>
+        <div class="header-actions">
+          <button pButton 
+                  icon="pi pi-check-circle" 
+                  class="p-button-text p-button-sm"
+                  pTooltip="Tout marquer comme lu"
+                  (click)="markAllAsRead()"></button>
+          <button pButton 
+                  icon="pi pi-trash" 
+                  class="p-button-text p-button-sm p-button-danger"
+                  pTooltip="Supprimer les notifications lues"
+                  (click)="deleteAllRead()"></button>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="notifications-content">
+      <div *ngIf="(notifications$ | async)?.length === 0" class="no-notifications">
+        <i class="pi pi-inbox"></i>
+        <p>Aucune notification</p>
+      </div>
+
+      <div *ngFor="let notification of notifications$ | async" 
+           class="notification-item"
+           [class.unread]="!notification.read"
+           [class.notification-success]="notification.type === 'success'"
+           [class.notification-info]="notification.type === 'info'"
+           [class.notification-warning]="notification.type === 'warning'"
+           [class.notification-error]="notification.type === 'error'">
+        
+        <div class="notification-icon">
+          <i [class]="getNotificationIcon(notification.type)"></i>
+        </div>
+
+        <div class="notification-content">
+          <h4>{{ notification.title }}</h4>
+          <p>{{ notification.message }}</p>
+          <span class="notification-time">{{ getTimeAgo(notification.date) }}</span>
+        </div>
+
+        <div class="notification-actions">
+          <button pButton 
+                  icon="pi pi-eye" 
+                  class="p-button-text p-button-sm"
+                  *ngIf="!notification.read"
+                  pTooltip="Marquer comme lu"
+                  (click)="markAsRead(notification.id)"></button>
+          <button pButton 
+                  icon="pi pi-times" 
+                  class="p-button-text p-button-sm p-button-danger"
+                  pTooltip="Supprimer"
+                  (click)="deleteNotification(notification.id)"></button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="notifications-footer">
+        <button pButton 
+                label="Voir toutes les notifications" 
+                icon="pi pi-arrow-right"
+                class="p-button-text"
+                [routerLink]="['/notifications']"
+                (click)="notificationsPanelVisible = false"></button>
+      </div>
+    </ng-template>
+  </p-sidebar>
 
   <p-sidebar [(visible)]="visibleSidebar" [baseZIndex]="10000" [style]="{'width': '300px'}" [modal]="true" [showCloseIcon]="false">
     <ng-template pTemplate="header">
@@ -56,35 +171,7 @@
           </li>
         </ul>
       </div>
-
-      <div class="nav-section">
-        <span class="nav-section-title">SUPPORT</span>
-        <ul class="nav-list">
-          <li class="nav-item">
-            <a class="nav-link" pRipple>
-              <i class="pi pi-question-circle"></i>
-              <span class="nav-label">Aide & Support</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" pRipple>
-              <i class="pi pi-book"></i>
-              <span class="nav-label">Documentation</span>
-            </a>
-          </li>
-        </ul>
-      </div>
     </nav>
-
-    <!-- Sidebar Footer -->
-    <div class="sidebar-footer">
-      <div class="upgrade-card">
-        <i class="pi pi-star"></i>
-        <h4>Version Pro</h4>
-        <p>Débloquez toutes les fonctionnalités</p>
-        <button pButton label="Mettre à niveau" class="p-button-sm upgrade-button"></button>
-      </div>
-    </div>
   </p-sidebar>
 
   <main class="main-content">

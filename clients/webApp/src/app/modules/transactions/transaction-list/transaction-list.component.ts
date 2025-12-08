@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-transaction-list',
@@ -10,7 +11,11 @@ import { ApiService } from '../../../services/api.service';
 export class TransactionListComponent implements OnInit {
   transactions: any[] = [];
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(
+    private apiService: ApiService, 
+    private router: Router,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
     this.apiService.getTransactions().subscribe(data => this.transactions = data);
@@ -25,7 +30,20 @@ export class TransactionListComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.apiService.deleteTransaction(id).subscribe(() => this.transactions = this.transactions.filter(t => t.id !== id));
+    const transaction = this.transactions.find(t => t.id === id);
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
+      this.apiService.deleteTransaction(id).subscribe(() => {
+        this.transactions = this.transactions.filter(t => t.id !== id);
+        
+        // Notification de suppression
+        this.notificationService.addNotification({
+          type: 'error',
+          title: 'Transaction supprimée',
+          message: `La transaction de ${transaction?.montant}€ a été supprimée`,
+          read: false
+        });
+      });
+    }
   }
 
   add() {

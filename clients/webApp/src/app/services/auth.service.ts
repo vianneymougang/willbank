@@ -5,7 +5,7 @@ import { Observable, tap, of, delay } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 // Mode mock pour tester sans backend
-const MOCK_MODE = false;
+const MOCK_MODE = true;
 
 @Injectable({
   providedIn: 'root'

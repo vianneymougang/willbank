@@ -8,13 +8,20 @@
   </div>
 
   <p-card class="table-card">
-    <p-table [value]="clients" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
-             [globalFilterFields]="['nom','prenom','email']" styleClass="p-datatable-striped">
+    <p-table #dt [value]="clients" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]" 
+             [globalFilterFields]="['nom','prenom','email','telephone']" styleClass="p-datatable-striped"
+             [showCurrentPageReport]="true"
+             currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} clients">
       <ng-template pTemplate="caption">
         <div class="table-header">
-          <span class="p-input-icon-left">
+          <span class="p-input-icon-left search-input">
             <i class="pi pi-search"></i>
-            <input pInputText type="text" placeholder="Rechercher un client..." />
+            <input pInputText type="text" 
+                   placeholder="Rechercher par nom, prénom, email ou téléphone..." 
+                   (input)="onSearch($event, dt)" />
+          </span>
+          <span class="results-count" *ngIf="clients.length > 0">
+            {{ clients.length }} client(s) trouvé(s)
           </span>
         </div>
       </ng-template>

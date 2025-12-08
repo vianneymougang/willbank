@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-account-list',
@@ -10,7 +11,11 @@ import { ApiService } from '../../../services/api.service';
 export class AccountListComponent implements OnInit {
   accounts: any[] = [];
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(
+    private apiService: ApiService, 
+    private router: Router,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
     this.apiService.getAccounts().subscribe(data => this.accounts = data);
@@ -25,7 +30,20 @@ export class AccountListComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.apiService.deleteAccount(id).subscribe(() => this.accounts = this.accounts.filter(a => a.id !== id));
+    const account = this.accounts.find(a => a.id === id);
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce compte ?')) {
+      this.apiService.deleteAccount(id).subscribe(() => {
+        this.accounts = this.accounts.filter(a => a.id !== id);
+        
+        // Notification de suppression
+        this.notificationService.addNotification({
+          type: 'warning',
+          title: 'Compte supprimé',
+          message: `Le compte ${account?.type} (${account?.numeroCompte}) a été supprimé`,
+          read: false
+        });
+      });
+    }
   }
 
   add() {

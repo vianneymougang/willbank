@@ -4,124 +4,177 @@
     <p>Bienvenue sur votre espace WillBank CRM</p>
   </div>
 
-  <div class="stats-grid">
+  <!-- Statistiques Globales -->
+  <div class="stats-grid" *ngIf="stats">
     <div class="stat-card">
       <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
         <i class="pi pi-users"></i>
       </div>
       <div class="stat-content">
-        <h3>Clients</h3>
-        <p class="stat-number">1,234</p>
-        <span class="stat-change positive"><i class="pi pi-arrow-up"></i> +12%</span>
+        <span class="stat-label">Total Clients</span>
+        <h2 class="stat-value">{{ stats.totalClients }}</h2>
+        <span class="stat-growth positive">
+          <i class="pi pi-arrow-up"></i> {{ stats.clientsGrowth }}%
+        </span>
       </div>
     </div>
 
     <div class="stat-card">
       <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-        <i class="pi pi-dollar"></i>
+        <i class="pi pi-wallet"></i>
       </div>
       <div class="stat-content">
-        <h3>Revenus</h3>
-        <p class="stat-number">€45.2K</p>
-        <span class="stat-change positive"><i class="pi pi-arrow-up"></i> +8%</span>
+        <span class="stat-label">Total Comptes</span>
+        <h2 class="stat-value">{{ stats.totalAccounts }}</h2>
+        <span class="stat-growth positive">
+          <i class="pi pi-arrow-up"></i> {{ stats.accountsGrowth }}%
+        </span>
       </div>
     </div>
 
     <div class="stat-card">
       <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-        <i class="pi pi-file"></i>
+        <i class="pi pi-money-bill"></i>
       </div>
       <div class="stat-content">
-        <h3>Contrats</h3>
-        <p class="stat-number">89</p>
-        <span class="stat-change positive"><i class="pi pi-arrow-up"></i> +5%</span>
+        <span class="stat-label">Transactions</span>
+        <h2 class="stat-value">{{ stats.totalTransactions }}</h2>
+        <span class="stat-growth positive">
+          <i class="pi pi-arrow-up"></i> {{ stats.transactionsGrowth }}%
+        </span>
       </div>
     </div>
 
     <div class="stat-card">
       <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-        <i class="pi pi-check-circle"></i>
+        <i class="pi pi-euro"></i>
       </div>
       <div class="stat-content">
-        <h3>Tâches</h3>
-        <p class="stat-number">24</p>
-        <span class="stat-change negative"><i class="pi pi-arrow-down"></i> -3%</span>
+        <span class="stat-label">Solde Total</span>
+        <h2 class="stat-value">{{ stats.totalBalance | number:'1.0-0' }} €</h2>
+        <span class="stat-growth positive">
+          <i class="pi pi-arrow-up"></i> {{ stats.balanceGrowth }}%
+        </span>
       </div>
     </div>
   </div>
 
-  <div class="dashboard-content">
-    <div class="content-left">
-      <p-card>
-        <ng-template pTemplate="header">
-          <div class="card-header-custom">
-            <i class="pi pi-chart-bar"></i>
-            <span>Activité récente</span>
-          </div>
-        </ng-template>
-        <div class="activity-list">
-          <div class="activity-item">
-            <div class="activity-icon" style="background: #667eea;">
-              <i class="pi pi-user-plus"></i>
-            </div>
-            <div class="activity-details">
-              <p class="activity-title">Nouveau client ajouté</p>
-              <small>Il y a 2 heures</small>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background: #f5576c;">
-              <i class="pi pi-file-edit"></i>
-            </div>
-            <div class="activity-details">
-              <p class="activity-title">Contrat modifié</p>
-              <small>Il y a 5 heures</small>
-            </div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon" style="background: #00f2fe;">
-              <i class="pi pi-check"></i>
-            </div>
-            <div class="activity-details">
-              <p class="activity-title">Tâche complétée</p>
-              <small>Hier</small>
-            </div>
-          </div>
-        </div>
-      </p-card>
+  <!-- Graphiques -->
+  <div class="charts-grid" *ngIf="clientsChartData && accountsChartData && transactionsChartData">
+    <div class="chart-card">
+      <h3><i class="pi pi-chart-line"></i> Évolution des Clients</h3>
+      <p-chart type="line" [data]="clientsChartData" [options]="lineChartOptions" height="300px"></p-chart>
     </div>
 
-    <div class="content-right">
-      <p-card>
-        <ng-template pTemplate="header">
-          <div class="card-header-custom">
-            <i class="pi pi-calendar"></i>
-            <span>Événements à venir</span>
-          </div>
-        </ng-template>
-        <div class="events-list">
-          <div class="event-item">
-            <div class="event-date">
-              <span class="day">15</span>
-              <span class="month">DÉC</span>
-            </div>
-            <div class="event-details">
-              <p class="event-title">Réunion client</p>
-              <small>14:00 - 15:30</small>
-            </div>
-          </div>
-          <div class="event-item">
-            <div class="event-date">
-              <span class="day">18</span>
-              <span class="month">DÉC</span>
-            </div>
-            <div class="event-details">
-              <p class="event-title">Présentation projet</p>
-              <small>10:00 - 12:00</small>
-            </div>
-          </div>
-        </div>
-      </p-card>
+    <div class="chart-card">
+      <h3><i class="pi pi-chart-pie"></i> Répartition des Comptes</h3>
+      <p-chart type="doughnut" [data]="accountsChartData" [options]="chartOptions" height="300px"></p-chart>
     </div>
+
+    <div class="chart-card">
+      <h3><i class="pi pi-chart-bar"></i> Transactions par Type</h3>
+      <p-chart type="bar" [data]="transactionsChartData" [options]="chartOptions" height="300px"></p-chart>
+    </div>
+  </div>
+
+  <!-- Section Clients -->
+  <div class="section-header">
+    <h2><i class="pi pi-users"></i> Derniers Clients</h2>
+    <p-button label="Voir tout" icon="pi pi-arrow-right" [text]="true" routerLink="/clients" iconPos="right"></p-button>
+  </div>
+  <div class="blocks-grid" *ngIf="!loading && recentClients.length > 0">
+    <div class="block-card client-block" *ngFor="let client of recentClients" [routerLink]="['/clients', client.id]">
+      <div class="block-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <i class="pi pi-user"></i>
+      </div>
+      <div class="block-content">
+        <h3>{{ client.nom }} {{ client.prenom }}</h3>
+        <p class="block-info"><i class="pi pi-envelope"></i> {{ client.email }}</p>
+        <p class="block-info"><i class="pi pi-phone"></i> {{ client.telephone }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="empty-state" *ngIf="!loading && recentClients.length === 0">
+    <i class="pi pi-users"></i>
+    <p>Aucun client récent</p>
+  </div>
+
+  <!-- Section Transactions -->
+  <div class="section-header">
+    <h2><i class="pi pi-money-bill"></i> Dernières Transactions</h2>
+    <p-button label="Voir tout" icon="pi pi-arrow-right" [text]="true" routerLink="/transactions" iconPos="right"></p-button>
+  </div>
+  <div class="blocks-grid" *ngIf="!loading && recentTransactions.length > 0">
+    <div class="block-card transaction-block" *ngFor="let transaction of recentTransactions" [routerLink]="['/transactions', transaction.id]">
+      <div class="block-icon" [style.background]="transaction.type === 'depot' ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' : transaction.type === 'retrait' ? 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'">
+        <i [class]="transaction.type === 'depot' ? 'pi pi-arrow-down' : transaction.type === 'retrait' ? 'pi pi-arrow-up' : 'pi pi-arrow-right-arrow-left'"></i>
+      </div>
+      <div class="block-content">
+        <div class="block-header">
+          <h3>{{ getTransactionTypeLabel(transaction.type) }}</h3>
+          <p-tag [value]="getTransactionTypeLabel(transaction.type)" [severity]="getTransactionTypeSeverity(transaction.type)"></p-tag>
+        </div>
+        <p class="block-amount">{{ transaction.montant | number:'1.2-2' }} €</p>
+        <p class="block-info" *ngIf="transaction.telephoneSource">
+          <i class="pi pi-phone"></i> {{ transaction.telephoneSource }}
+        </p>
+        <small class="block-date">{{ formatDate(transaction.date) }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="empty-state" *ngIf="!loading && recentTransactions.length === 0">
+    <i class="pi pi-money-bill"></i>
+    <p>Aucune transaction récente</p>
+  </div>
+
+  <!-- Section Comptes -->
+  <div class="section-header">
+    <h2><i class="pi pi-wallet"></i> Derniers Comptes</h2>
+    <p-button label="Voir tout" icon="pi pi-arrow-right" [text]="true" routerLink="/accounts" iconPos="right"></p-button>
+  </div>
+  <div class="blocks-grid" *ngIf="!loading && recentAccounts.length > 0">
+    <div class="block-card account-block" *ngFor="let account of recentAccounts" [routerLink]="['/accounts', account.id]">
+      <div class="block-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <i class="pi pi-wallet"></i>
+      </div>
+      <div class="block-content">
+        <h3>{{ getAccountTypeLabel(account.type) }}</h3>
+        <p class="block-account-number">{{ account.numeroCompte }}</p>
+        <p class="block-balance">{{ account.solde | number:'1.2-2' }} €</p>
+        <small class="block-date">Créé le {{ account.dateCreation }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="empty-state" *ngIf="!loading && recentAccounts.length === 0">
+    <i class="pi pi-wallet"></i>
+    <p>Aucun compte récent</p>
+  </div>
+
+  <!-- Section Notifications -->
+  <div class="section-header">
+    <h2><i class="pi pi-bell"></i> Dernières Notifications</h2>
+    <p-button label="Voir tout" icon="pi pi-arrow-right" [text]="true" routerLink="/notifications" iconPos="right"></p-button>
+  </div>
+  <div class="blocks-grid" *ngIf="!loading && recentNotifications.length > 0">
+    <div class="block-card notification-block" *ngFor="let notification of recentNotifications" [class.unread]="!notification.read">
+      <div class="block-icon" [style.background]="notification.type === 'success' ? 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' : notification.type === 'warning' ? 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' : notification.type === 'error' ? 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)' : 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'">
+        <i [class]="'pi ' + getNotificationIcon(notification.type)"></i>
+      </div>
+      <div class="block-content">
+        <h3>{{ notification.title }}</h3>
+        <p class="block-message">{{ notification.message }}</p>
+        <small class="block-date">{{ formatDate(notification.date) }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="empty-state" *ngIf="!loading && recentNotifications.length === 0">
+    <i class="pi pi-bell"></i>
+    <p>Aucune notification récente</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <i class="pi pi-spin pi-spinner"></i>
+    <p>Chargement des données...</p>
   </div>
 </div>

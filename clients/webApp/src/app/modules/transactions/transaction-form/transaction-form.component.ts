@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
+import { NotificationService } from '../../../services/notification.service';
 
 interface TransactionType {
   label: string;
@@ -28,7 +29,8 @@ export class TransactionFormComponent implements OnInit {
     private fb: FormBuilder, 
     private route: ActivatedRoute, 
     private router: Router, 
-    private apiService: ApiService
+    private apiService: ApiService,
+    private notificationService: NotificationService
   ) {
     this.transactionForm = this.fb.group({
       type: ['', Validators.required],
@@ -61,10 +63,47 @@ export class TransactionFormComponent implements OnInit {
   save() {
     if (this.transactionForm.valid) {
       const data = this.transactionForm.value;
+      const typeLabel = this.transactionTypes.find(t => t.value === data.type)?.label || data.type;
+      
       if (this.isEdit) {
-        this.apiService.updateTransaction(this.transactionId!, data).subscribe(() => this.router.navigate(['/transactions']));
+        this.apiService.updateTransaction(this.transactionId!, data).subscribe((transaction) => {
+          // Notification de modification
+          this.notificationService.addNotification({
+            type: 'info',
+            title: 'Transaction modifiée',
+            message: `La transaction de ${data.montant}€ a été mise à jour`,
+            read: false,
+            action: 'view-transaction',
+            actionData: { transactionId: this.transactionId }
+          });
+          this.router.navigate(['/transactions']);
+        });
       } else {
-        this.apiService.createTransfer(data).subscribe(() => this.router.navigate(['/transactions']));
+        this.apiService.createTransfer(data).subscribe((transaction) => {
+          // Notification de succès
+          this.notificationService.addNotification({
+            type: 'success',
+            title: 'Transaction effectuée',
+            message: `${typeLabel} de ${data.montant}€ effectué avec succès`,
+            read: false,
+            action: 'view-transaction',
+            actionData: { transactionId: transaction.id }
+          });
+          
+          // Notification supplémentaire pour les gros montants
+          if (data.montant > 1000) {
+            this.notificationService.addNotification({
+              type: 'info',
+              title: 'Transaction importante',
+              message: `Une transaction de ${data.montant}€ a été effectuée`,
+              read: false,
+              action: 'view-transaction',
+              actionData: { transactionId: transaction.id }
+            });
+          }
+          
+          this.router.navigate(['/transactions']);
+        });
       }
     }
   }

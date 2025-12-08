@@ -4,7 +4,7 @@ import { Observable, of, delay } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 // Mode mock pour tester sans backend
-const MOCK_MODE = false;
+const MOCK_MODE = true;
 
 @Injectable({
   providedIn: 'root'
@@ -64,11 +64,39 @@ export class ApiService {
     return this.http.get<any>(`${this.baseUrl}/clients/${id}`);
   }
 
+  searchClients(searchText: string): Observable<any[]> {
+    if (MOCK_MODE) {
+      const searchLower = searchText.toLowerCase();
+      const filtered = this.mockClients.filter(client => 
+        client.nom.toLowerCase().includes(searchLower) ||
+        client.prenom.toLowerCase().includes(searchLower) ||
+        client.email.toLowerCase().includes(searchLower) ||
+        client.telephone.includes(searchText) ||
+        client.adresse.toLowerCase().includes(searchLower)
+      );
+      return of([...filtered]).pipe(delay(300));
+    }
+    return this.http.get<any[]>(`${this.baseUrl}/clients/search`, { 
+      params: { q: searchText } 
+    });
+  }
+
   createClient(client: any): Observable<any> {
     if (MOCK_MODE) {
       const newClient = { ...client, id: Math.max(...this.mockClients.map(c => c.id)) + 1 };
       this.mockClients.push(newClient);
-      return of(newClient).pipe(delay(300));
+      
+      // Format ApiResponse avec notification
+      return of({
+        data: newClient,
+        notification: {
+          type: 'success',
+          title: 'Client créé',
+          message: `Le client "${client.nom} ${client.prenom}" a été créé avec succès`,
+          action: 'view-client',
+          actionData: { clientId: newClient.id }
+        }
+      }).pipe(delay(300));
     }
     return this.http.post<any>(`${this.baseUrl}/clients`, client);
   }
@@ -79,20 +107,42 @@ export class ApiService {
       if (index !== -1) {
         this.mockClients[index] = { ...client, id };
       }
-      return of(this.mockClients[index]).pipe(delay(300));
+      
+      // Format ApiResponse avec notification
+      return of({
+        data: this.mockClients[index],
+        notification: {
+          type: 'info',
+          title: 'Client modifié',
+          message: `Les informations du client "${client.nom} ${client.prenom}" ont été mises à jour`,
+          action: 'view-client',
+          actionData: { clientId: id }
+        }
+      }).pipe(delay(300));
     }
     return this.http.put<any>(`${this.baseUrl}/clients/${id}`, client);
   }
 
-  deleteClient(id: number): Observable<void> {
+  deleteClient(id: number): Observable<any> {
     if (MOCK_MODE) {
       const index = this.mockClients.findIndex(c => c.id === id);
+      let clientName = '';
       if (index !== -1) {
+        const client = this.mockClients[index];
+        clientName = `${client.nom} ${client.prenom}`;
         this.mockClients.splice(index, 1);
       }
-      return of(void 0).pipe(delay(300));
+      
+      // Format ApiResponse avec notification
+      return of({
+        notification: {
+          type: 'warning',
+          title: 'Client supprimé',
+          message: `Le client "${clientName}" a été supprimé`
+        }
+      }).pipe(delay(300));
     }
-    return this.http.delete<void>(`${this.baseUrl}/clients/${id}`);
+    return this.http.delete<any>(`${this.baseUrl}/clients/${id}`);
   }
 
   // ========== ACCOUNTS ==========
@@ -128,7 +178,34 @@ export class ApiService {
         dateCreation: new Date().toISOString().split('T')[0]
       };
       this.mockAccounts.push(newAccount);
-      return of(newAccount).pipe(delay(300));
+      
+      const notifications = [];
+      
+      // Notification principale
+      notifications.push({
+        type: 'success',
+        title: 'Nouveau compte',
+        message: `Un compte ${account.type} a été créé avec un solde de ${account.solde}€`,
+        action: 'view-account',
+        actionData: { accountId: newAccount.id }
+      });
+      
+      // Notification supplémentaire si solde faible
+      if (account.solde < 100) {
+        notifications.push({
+          type: 'warning',
+          title: 'Solde faible',
+          message: 'Le nouveau compte a un solde inférieur à 100€',
+          action: 'view-account',
+          actionData: { accountId: newAccount.id }
+        });
+      }
+      
+      // Format ApiResponse avec notifications multiples
+      return of({
+        data: newAccount,
+        notifications: notifications
+      }).pipe(delay(300));
     }
     return this.http.post<any>(`${this.baseUrl}/accounts`, account);
   }
@@ -139,20 +216,42 @@ export class ApiService {
       if (index !== -1) {
         this.mockAccounts[index] = { ...this.mockAccounts[index], ...account, id };
       }
-      return of(this.mockAccounts[index]).pipe(delay(300));
+      
+      // Format ApiResponse avec notification
+      return of({
+        data: this.mockAccounts[index],
+        notification: {
+          type: 'info',
+          title: 'Compte modifié',
+          message: `Le compte ${account.type} a été mis à jour`,
+          action: 'view-account',
+          actionData: { accountId: id }
+        }
+      }).pipe(delay(300));
     }
     return this.http.put<any>(`${this.baseUrl}/accounts/${id}`, account);
   }
 
-  deleteAccount(id: number): Observable<void> {
+  deleteAccount(id: number): Observable<any> {
     if (MOCK_MODE) {
       const index = this.mockAccounts.findIndex(a => a.id === id);
+      let accountInfo = '';
       if (index !== -1) {
+        const account = this.mockAccounts[index];
+        accountInfo = `${account.type} (${account.numeroCompte})`;
         this.mockAccounts.splice(index, 1);
       }
-      return of(void 0).pipe(delay(300));
+      
+      // Format ApiResponse avec notification
+      return of({
+        notification: {
+          type: 'warning',
+          title: 'Compte supprimé',
+          message: `Le compte ${accountInfo} a été supprimé`
+        }
+      }).pipe(delay(300));
     }
-    return this.http.delete<void>(`${this.baseUrl}/accounts/${id}`);
+    return this.http.delete<any>(`${this.baseUrl}/accounts/${id}`);
   }
 
   // ========== TRANSACTIONS ==========

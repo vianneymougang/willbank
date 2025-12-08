@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test:ci": "ng test",
+    "test:ci": "ng test --no-watch --code-coverage --browsers=ChromeHeadlessNoSandbox",
     "serve:ssr:willbank-web-crm": "node dist/willbank-web-crm/server/server.mjs"
   },
   "private": true,

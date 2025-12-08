@@ -44,8 +44,48 @@ public interface AccountService {
      */
     AccountResponse updateAccountStatus(Long id, AccountStatus status);
 
+    // Internal methods for service-to-service communication (no auth checks)
+    AccountResponse getAccountByIdInternal(Long id);
+
+    AccountResponse updateBalanceInternal(Long id, BigDecimal amount);
+
+    boolean hasSufficientBalanceInternal(Long id, BigDecimal amount);
+
+    boolean isAccountActiveInternal(Long id);
+
     /**
      * Get account balance
      */
     BigDecimal getAccountBalance(Long id);
+
+    // ============================================
+    // Internal Methods for Transaction Service
+    // ============================================
+
+    /**
+     * Update account balance (add or subtract amount)
+     * Used by transaction-service for atomic balance updates
+     * 
+     * @param id     Account ID
+     * @param amount Amount to add (positive) or subtract (negative)
+     * @return Updated account
+     */
+    AccountResponse updateBalance(Long id, BigDecimal amount);
+
+    /**
+     * Check if account has sufficient balance
+     * 
+     * @param id     Account ID
+     * @param amount Amount to check
+     * @return true if balance >= amount
+     */
+    boolean hasSufficientBalance(Long id, BigDecimal amount);
+
+    /**
+     * Check if account is active
+     * 
+     * @param id Account ID
+     * @return true if account status is ACTIVE
+     */
+    boolean isAccountActive(Long id);
 }

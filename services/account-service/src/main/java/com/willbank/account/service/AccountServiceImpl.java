@@ -63,6 +63,40 @@ public class AccountServiceImpl implements AccountService {
         return mapToResponse(account);
     }
 
+    // ============================================
+    // Internal Methods (No Authorization Checks)
+    // For service-to-service communication
+    // ============================================
+
+    @Override
+    @Transactional(readOnly = true)
+    public AccountResponse getAccountByIdInternal(Long id) {
+        log.debug("Internal: Get account {}", id);
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with id: " + id));
+        return mapToResponse(account);
+    }
+
+    @Override
+    public AccountResponse updateBalanceInternal(Long id, BigDecimal amount) {
+        log.info("Internal: Updating balance for account {} by {}", id, amount);
+        return updateBalance(id, amount); // Reuse existing method
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasSufficientBalanceInternal(Long id, BigDecimal amount) {
+        log.debug("Internal: Checking sufficient balance for account {}, amount: {}", id, amount);
+        return hasSufficientBalance(id, amount); // Reuse existing method
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAccountActiveInternal(Long id) {
+        log.debug("Internal: Checking if account {} is active", id);
+        return isAccountActive(id); // Reuse existing method
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<AccountResponse> getAllAccounts() {
@@ -167,5 +201,64 @@ public class AccountServiceImpl implements AccountService {
                 .createdAt(account.getCreatedAt())
                 .updatedAt(account.getUpdatedAt())
                 .build();
+    }
+
+    // ============================================
+    // Internal Methods for Transaction Service
+    // ============================================
+
+    @Override
+    public AccountResponse updateBalance(Long id, BigDecimal amount) {
+        log.info("Internal: Updating balance for account {} by {}", id, amount);
+
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
+
+        // Check account is active
+        if (account.getStatus() != AccountStatus.ACTIVE) {
+            throw new RuntimeException("Account is not active. Status: " + account.getStatus());
+        }
+
+        BigDecimal newBalance = account.getBalance().add(amount);
+
+        // Prevent negative balance
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException(
+                    "Insufficient balance. Current: " + account.getBalance() + ", Requested: " + amount);
+        }
+
+        account.setBalance(newBalance);
+        Account updatedAccount = accountRepository.save(account);
+
+        log.info("Balance updated successfully. New balance: {}", newBalance);
+        return mapToResponse(updatedAccount);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasSufficientBalance(Long id, BigDecimal amount) {
+        log.debug("Internal: Checking sufficient balance for account {}, amount: {}", id, amount);
+
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
+
+        boolean sufficient = account.getBalance().compareTo(amount) >= 0;
+        log.debug("Sufficient balance check result: {}", sufficient);
+
+        return sufficient;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAccountActive(Long id) {
+        log.debug("Internal: Checking if account {} is active", id);
+
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found with ID: " + id));
+
+        boolean isActive = account.getStatus() == AccountStatus.ACTIVE;
+        log.debug("Account active status: {}", isActive);
+
+        return isActive;
     }
 }

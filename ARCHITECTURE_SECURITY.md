@@ -14,7 +14,7 @@ L'architecture WillBank suit le pattern **API Gateway** où tous les microservic
 | **Discovery Server** | 8761 | 🔓 Eureka UI (pour monitoring/debug) |
 | **Config Server** | 8888 | 🔓 Configuration centralisée |
 | **RabbitMQ Management** | 15672 | 🔓 Interface de gestion RabbitMQ |
-| **Mongo Express** | 8085 | 🔓 Interface de gestion MongoDB |
+| **Mongo Express** | 8087 | 🔓 Interface de gestion MongoDB |
 
 ### Microservices (NON Exposés Directement)
 
@@ -24,6 +24,8 @@ L'architecture WillBank suit le pattern **API Gateway** où tous les microservic
 | user-service | 8081 | 🔒 Via API Gateway uniquement |
 | account-service | 8082 | 🔒 Via API Gateway uniquement |
 | notification-service | 8084 | 🔒 Via API Gateway uniquement |
+| **transaction-service** | **8085** | **🔒 Via API Gateway uniquement** |
+| composite-service (prévu) | 8086 | 🔒 Via API Gateway uniquement |
 
 ## Différence Docker: `ports` vs `expose`
 
@@ -112,7 +114,7 @@ rabbitmq:
 
 mongo-express:
   ports:
-    - "8085:8081"    # MongoDB UI
+    - "8087:8081"    # MongoDB UI
 
 discovery-server:
   ports:

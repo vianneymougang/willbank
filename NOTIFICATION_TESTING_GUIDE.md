@@ -172,8 +172,8 @@ MailTrap Web UI (http://localhost:1080)
   - Queues: `willbank.customer.created`, `willbank.dlq`
   - Message rates
 
-### Mongo Express
-- **URL**: http://localhost:8085
+### Accès Mongo Express (MongoDB UI)
+- **URL**: http://localhost:8087
 - **Login**: admin / admin123
 - **Database**: notifications
 - **Collection**: notifications

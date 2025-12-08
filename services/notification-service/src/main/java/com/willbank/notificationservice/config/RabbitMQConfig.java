@@ -150,4 +150,24 @@ public class RabbitMQConfig {
                 .to(deadLetterExchange())
                 .with("dlq");
     }
+
+    // ============================================
+    // Transaction Queue Bindings
+    // ============================================
+
+    @Bean
+    public Binding transactionCompletedBinding() {
+        return BindingBuilder
+                .bind(transactionCompletedQueue())
+                .to(transactionExchange())
+                .with("transaction.completed");
+    }
+
+    @Bean
+    public Binding largeTransactionAlertBinding() {
+        return BindingBuilder
+                .bind(largeTransactionAlertQueue())
+                .to(transactionExchange())
+                .with("transaction.large_alert");
+    }
 }

@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableAsync
-@EnableScheduling // Enable scheduled tasks (password cleanup job)
+@EnableScheduling
 @EnableDiscoveryClient
 public class UserServiceApplication {
 

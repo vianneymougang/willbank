@@ -11,10 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * Event for transaction completion
- * Will be published by transaction-service (to be implemented)
- * 
- * NOTE: Infrastructure prepared, implementation deferred until
- * transaction-service exists
+ * Published by transaction-service when a transaction completes successfully
  */
 @Data
 @NoArgsConstructor
@@ -25,11 +22,18 @@ public class TransactionCompletedEvent implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long transactionId;
-    private Long customerId;
-    private String accountNumber;
-    private String transactionType; // TRANSFER, DEPOSIT, WITHDRAWAL
+    private Long accountId;
+    private Long destinationAccountId; // Null for DEPOSIT/WITHDRAWAL
+    private String type; // DEPOSIT, WITHDRAWAL, TRANSFER
     private BigDecimal amount;
-    private String currency;
+    private BigDecimal newBalance;
     private String description;
     private LocalDateTime completedAt;
+
+    // Account/Customer info for notification
+    private String accountNumber;
+    private String accountType; // SAVINGS, CHECKING, etc.
+    private String customerEmail;
+    private String customerFirstName;
+    private Long customerId;
 }

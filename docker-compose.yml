@@ -53,7 +53,6 @@ services:
       - willbank-microservices
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - SPRING_CLOUD_CONFIG_ENABLED=false
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - TEMP_PASSWORD_ENCRYPTION_KEY=${TEMP_PASSWORD_ENCRYPTION_KEY:-WillBank2025SecureEncryptionKey!@#}
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
@@ -200,6 +199,58 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     restart: unless-stopped
 
+  postgres-transactions:
+    container_name: willbank-postgres-transactions
+    image: postgres:16-alpine
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: willbank_transactions
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-transactions-data:/var/lib/postgresql/data
+    networks:
+      - willbank-microservices
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  transaction-service:
+    container_name: willbank-transaction-service
+    build: ./services/transaction-service
+    # Port NOT exposed - accessible only via API Gateway
+    expose:
+      - "8085"
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      postgres-transactions:
+        condition: service_healthy
+      account-service:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - willbank-microservices
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-transactions:5432/willbank_transactions
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      - WILLBANK_TRANSACTION_LARGETHRESHOLD=10000
+    restart: unless-stopped
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: willbank-rabbitmq
@@ -242,7 +293,7 @@ services:
     image: mongo-express:latest
     container_name: willbank-mongo-express
     ports:
-      - "8085:8081"
+      - "8087:8081"
     depends_on:
       mongodb:
         condition: service_healthy
@@ -305,6 +356,7 @@ volumes:
   postgres-accounts-data:
   postgres-users-data:
   postgres-auth-data:
+  postgres-transactions-data:
   mongodb-data:
 
 networks:

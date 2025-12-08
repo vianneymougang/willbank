@@ -31,6 +31,13 @@ spring:
                 - Path=/api/accounts/**
               filters:
                 - StripPrefix=0
+
+            - id: transaction-service
+              uri: lb://transaction-service
+              predicates:
+                - Path=/api/transactions/**
+              filters:
+                - StripPrefix=0
           default-filters:
             - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
 

@@ -115,6 +115,16 @@ build:user-service:
       - services/user-service/**/*
       - .gitlab-ci.yml
 
+build:notification-service:
+  <<: *maven_build
+  script:
+    - cd services/notification-service
+    - mvn $MAVEN_CLI_OPTS clean package -DskipTests
+  only:
+    changes:
+      - services/notification-service/**/*
+      - .gitlab-ci.yml
+
 # ==========================================
 # BUILD STAGE - Angular Web App
 # ==========================================
@@ -290,6 +300,25 @@ test:user-service:
       - services/user-service/**/*
       - .gitlab-ci.yml
 
+test:notification-service:
+  <<: *maven_test
+  script:
+    - cd services/notification-service
+    - mvn $MAVEN_CLI_OPTS test
+  coverage: "/Total.*?([0-9]{1,3})%/"
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - services/notification-service/target/surefire-reports/TEST-*.xml
+    paths:
+      - services/notification-service/target/site/jacoco/
+    expire_in: 1 week
+  only:
+    changes:
+      - services/notification-service/**/*
+      - .gitlab-ci.yml
+
 # ==========================================
 # TEST STAGE - Angular Web App
 # ==========================================
@@ -446,6 +475,23 @@ docker:user-service:
       - .gitlab-ci.yml
   dependencies:
     - build:user-service
+
+docker:notification-service:
+  <<: *docker_build
+  script:
+    - cd services/notification-service
+    - docker build -t $REGISTRY/notification-service:$IMAGE_TAG -t $REGISTRY/notification-service:latest .
+    - docker push $REGISTRY/notification-service:$IMAGE_TAG
+    - docker push $REGISTRY/notification-service:latest
+  only:
+    refs:
+      - main
+      - develop
+    changes:
+      - services/notification-service/**/*
+      - .gitlab-ci.yml
+  dependencies:
+    - build:notification-service
 
 docker:webapp:
   <<: *docker_build

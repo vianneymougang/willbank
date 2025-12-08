@@ -1,15 +1,15 @@
 package com.willbank.userservice.event;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 /**
  * Stub implementation of EventPublisher
  * Logs events instead of sending to RabbitMQ
  * 
- * TODO: Replace with RabbitTemplate when notification service is ready
+ * NOTE: No longer active (@Component removed)
+ * Kept for reference and potential debugging use
+ * Now using RabbitMQEventPublisher as the primary implementation
  */
-@Component
 @Slf4j
 public class LoggingEventPublisher implements EventPublisher {
 

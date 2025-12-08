@@ -6,9 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * Response DTO for customer creation
- * Includes temporary password (only time it's visible)
+ * Does NOT include password for security (OWASP API3 compliance)
+ * Password is ONLY sent via email
  */
 @Data
 @NoArgsConstructor
@@ -21,12 +24,17 @@ public class CreateCustomerResponse {
     private String email;
     private String name;
     private String surname;
+    private String phone;
+    private String address;
+    private LocalDateTime createdAt;
 
     /**
-     * Temporary password - ONLY included in creation response
-     * Never logged, never stored in plain text after this
+     * Indicates if welcome email with credentials was sent
      */
-    private String temporaryPassword;
+    private Boolean passwordEmailSent;
 
+    /**
+     * Informative message for admin
+     */
     private String message;
 }

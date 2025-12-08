@@ -6,6 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
 
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -13,6 +14,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+
+  # RabbitMQ Configuration (Docker)
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   client:
@@ -40,6 +48,11 @@ logging:
     com.willbank.userservice: DEBUG
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
+
+# Application Security Configuration
+app:
+  security:
+    encryption-key: ${TEMP_PASSWORD_ENCRYPTION_KEY:CHANGE_ME_IN_PRODUCTION_32CHARS_MINIMUM}
 
 server:
   port: 8081

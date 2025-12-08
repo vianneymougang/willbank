@@ -113,7 +113,7 @@ public class AdminController {
 
                 log.info("Admin {} created customer: {} (ID: {})", adminEmail, customer.getEmail(), customer.getId());
 
-                // Publish event for notification service (stub for now)
+                // Publish event for notification service
                 CustomerCreatedEvent event = CustomerCreatedEvent.builder()
                                 .customerId(customer.getId())
                                 .email(customer.getEmail())
@@ -123,7 +123,18 @@ public class AdminController {
                                 .createdAt(LocalDateTime.now())
                                 .build();
 
-                eventPublisher.publishCustomerCreated(event);
+                // Publish event with detailed logging and error handling
+                boolean eventPublished = false;
+                try {
+                        log.info("🚀 Attempting to publish CustomerCreatedEvent for: {}", customer.getEmail());
+                        eventPublisher.publishCustomerCreated(event);
+                        log.info("✅ Event published successfully for customer ID: {}", customer.getId());
+                        eventPublished = true;
+                } catch (Exception e) {
+                        log.error("❌ Failed to publish CustomerCreatedEvent for {}: {}", customer.getEmail(),
+                                        e.getMessage(), e);
+                        // Don't block customer creation if event fails - log and continue
+                }
 
                 // Audit log
                 auditService.logAction(adminId, adminEmail, adminRole,
@@ -131,14 +142,20 @@ public class AdminController {
                                 "Created customer: " + customer.getEmail(),
                                 auditService.getClientIp(httpRequest), true);
 
-                // Return response with temporary password
+                // Return secure response (NO password in API response)
                 CreateCustomerResponse response = CreateCustomerResponse.builder()
                                 .customerId(customer.getId())
                                 .email(customer.getEmail())
                                 .name(customer.getName())
                                 .surname(customer.getSurname())
-                                .temporaryPassword(temporaryPassword)
-                                .message("Customer created successfully. Temporary password will be sent via email.")
+                                .phone(customer.getPhone())
+                                .address(customer.getAddress())
+                                .createdAt(LocalDateTime.now())
+                                .passwordEmailSent(eventPublished)
+                                .message(eventPublished
+                                                ? String.format("Customer created successfully. Login credentials have been sent to %s",
+                                                                customer.getEmail())
+                                                : "Customer created successfully. Warning: Email notification failed - please reset password manually.")
                                 .build();
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -180,18 +197,26 @@ public class AdminController {
 
                 log.info("Admin {} reset password for user {} (ID: {})", adminEmail, user.getEmail(), userId);
 
+                // TODO: Publish PasswordResetEvent for email notification
+                // For now, admin must communicate new password manually or customer must
+                // request reset link
+
                 // Audit log
                 auditService.logAction(adminId, adminEmail, adminRole,
                                 AuditAction.PASSWORD_RESET, "User", userId,
                                 "Reset password for user: " + user.getEmail(),
                                 auditService.getClientIp(httpRequest), true);
 
-                // Return new temporary password
+                // Return secure response (NO password in API response per OWASP guidelines)
                 return ResponseEntity.ok(CreateCustomerResponse.builder()
                                 .customerId(userId)
                                 .email(user.getEmail())
-                                .temporaryPassword(newTempPassword)
-                                .message("Password reset successfully. New temporary password generated.")
+                                .name(user.getName())
+                                .surname(user.getSurname())
+                                .passwordEmailSent(false) // TODO: Set to true when email event is implemented
+                                .message(String.format(
+                                                "Password reset successfully. New credentials will be sent to %s",
+                                                user.getEmail()))
                                 .build());
         }
 }

@@ -83,8 +83,9 @@ services:
   auth-service:
     container_name: willbank-auth-service
     build: ./services/auth-service
-    ports:
-      - "8083:8083"
+    # Port NOT exposed - accessible only via API Gateway
+    expose:
+      - "8083"
     depends_on:
       config-server:
         condition: service_healthy
@@ -128,13 +129,18 @@ services:
   account-service:
     container_name: willbank-account-service
     build: ./services/account-service
-    ports:
-      - "8082:8082"
+    # Port NOT exposed - accessible only via API Gateway
+    expose:
+      - "8082"
     depends_on:
+      config-server:
+        condition: service_healthy
       discovery-server:
         condition: service_healthy
       postgres-accounts:
         condition: service_healthy
+      user-service:
+        condition: service_started
     networks:
       - willbank-microservices
     environment:
@@ -168,14 +174,17 @@ services:
   user-service:
     container_name: willbank-user-service
     build: ./services/user-service
-    ports:
-      - "8081:8081"
+    # Port NOT exposed - accessible only via API Gateway
+    expose:
+      - "8081"
     depends_on:
       config-server:
         condition: service_healthy
       discovery-server:
         condition: service_healthy
       postgres-users:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - willbank-microservices
@@ -184,22 +193,119 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-users:5432/user_service_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
     restart: unless-stopped
 
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: willbank-rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - willbank-microservices
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:latest
+    container_name: willbank-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: notifications
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - willbank-microservices
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "'db.adminCommand(\"ping\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: willbank-mongo-express
+    ports:
+      - "8085:8081"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - willbank-microservices
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=admin123
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    restart: unless-stopped
+
+  mailtrap:
+    image: dbck/mailtrap:latest
+    container_name: willbank-mailtrap
+    ports:
+      - "1080:80"      # Web UI - http://localhost:1080
+      - "1025:25"      # SMTP
+      - "1587:587"     # SMTP with StartTLS
+    networks:
+      - willbank-microservices
+    restart: unless-stopped
+
+  notification-service:
+    container_name: willbank-notification-service
+    build: ./services/notification-service
+    # Port NOT exposed - accessible only via API Gateway (if needed)
+    expose:
+      - "8084"
+    depends_on:
+      config-server:
+        condition: service_healthy
+      discovery-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      mailtrap:
+        condition: service_started
+    networks:
+      - willbank-microservices
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=notifications
+      - SPRING_DATA_MONGODB_USERNAME=admin
+      - SPRING_DATA_MONGODB_PASSWORD=admin123
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+    restart: unless-stopped
+
 volumes:
   postgres-accounts-data:
   postgres-users-data:
   postgres-auth-data:
+  mongodb-data:
 
 networks:
   willbank-microservices:

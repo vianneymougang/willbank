@@ -29,6 +29,9 @@ class AccountServiceImplTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private com.willbank.account.security.AuthorizationService authorizationService;
+
     @InjectMocks
     private AccountServiceImpl accountService;
 
@@ -37,6 +40,11 @@ class AccountServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        // Configure authorization service to allow all operations in tests (lenient to
+        // avoid unnecessary stubbing errors)
+        lenient().when(authorizationService.canAccessAccount(any(Account.class))).thenReturn(true);
+        lenient().when(authorizationService.getCurrentUserId()).thenReturn(100L);
+
         testAccount = Account.builder()
                 .id(1L)
                 .customerId(100L)

@@ -125,6 +125,16 @@ build:notification-service:
       - services/notification-service/**/*
       - .gitlab-ci.yml
 
+build:transaction-service:
+  <<: *maven_build
+  script:
+    - cd services/transaction-service
+    - mvn $MAVEN_CLI_OPTS clean package -DskipTests
+  only:
+    changes:
+      - services/transaction-service/**/*
+      - .gitlab-ci.yml
+
 # ==========================================
 # BUILD STAGE - Angular Web App
 # ==========================================
@@ -319,6 +329,25 @@ test:notification-service:
       - services/notification-service/**/*
       - .gitlab-ci.yml
 
+test:transaction-service:
+  <<: *maven_test
+  script:
+    - cd services/transaction-service
+    - mvn $MAVEN_CLI_OPTS test
+  coverage: "/Total.*?([0-9]{1,3})%/"
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - services/transaction-service/target/surefire-reports/TEST-*.xml
+    paths:
+      - services/transaction-service/target/site/jacoco/
+    expire_in: 1 week
+  only:
+    changes:
+      - services/transaction-service/**/*
+      - .gitlab-ci.yml
+
 # ==========================================
 # TEST STAGE - Angular Web App
 # ==========================================
@@ -492,6 +521,23 @@ docker:notification-service:
       - .gitlab-ci.yml
   dependencies:
     - build:notification-service
+
+docker:transaction-service:
+  <<: *docker_build
+  script:
+    - cd services/transaction-service
+    - docker build -t $REGISTRY/transaction-service:$IMAGE_TAG -t $REGISTRY/transaction-service:latest .
+    - docker push $REGISTRY/transaction-service:$IMAGE_TAG
+    - docker push $REGISTRY/transaction-service:latest
+  only:
+    refs:
+      - main
+      - develop
+    changes:
+      - services/transaction-service/**/*
+      - .gitlab-ci.yml
+  dependencies:
+    - build:transaction-service
 
 docker:webapp:
   <<: *docker_build

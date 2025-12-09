@@ -29,6 +29,9 @@ class AccountServiceImplTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private com.willbank.account.security.AuthorizationService authorizationService;
+
     @InjectMocks
     private AccountServiceImpl accountService;
 
@@ -55,6 +58,10 @@ class AccountServiceImplTest {
                 .label("Compte Principal")
                 .initialBalance(BigDecimal.valueOf(1000))
                 .build();
+
+        // Setup authorization service to allow all access in tests
+        // Using lenient() because not all tests call this method
+        lenient().when(authorizationService.canAccessAccount(any(Account.class))).thenReturn(true);
     }
 
     @Test

@@ -135,6 +135,16 @@ build:transaction-service:
       - services/transaction-service/**/*
       - .gitlab-ci.yml
 
+build:composite-service:
+  <<: *maven_build
+  script:
+    - cd services/composite-service
+    - mvn $MAVEN_CLI_OPTS clean package -DskipTests
+  only:
+    changes:
+      - services/composite-service/**/*
+      - .gitlab-ci.yml
+
 # ==========================================
 # BUILD STAGE - Angular Web App
 # ==========================================
@@ -348,6 +358,25 @@ test:transaction-service:
       - services/transaction-service/**/*
       - .gitlab-ci.yml
 
+test:composite-service:
+  <<: *maven_test
+  script:
+    - cd services/composite-service
+    - mvn $MAVEN_CLI_OPTS test
+  coverage: "/Total.*?([0-9]{1,3})%/"
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - services/composite-service/target/surefire-reports/TEST-*.xml
+    paths:
+      - services/composite-service/target/site/jacoco/
+    expire_in: 1 week
+  only:
+    changes:
+      - services/composite-service/**/*
+      - .gitlab-ci.yml
+
 # ==========================================
 # TEST STAGE - Angular Web App
 # ==========================================
@@ -538,6 +567,23 @@ docker:transaction-service:
       - .gitlab-ci.yml
   dependencies:
     - build:transaction-service
+
+docker:composite-service:
+  <<: *docker_build
+  script:
+    - cd services/composite-service
+    - docker build -t $REGISTRY/composite-service:$IMAGE_TAG -t $REGISTRY/composite-service:latest .
+    - docker push $REGISTRY/composite-service:$IMAGE_TAG
+    - docker push $REGISTRY/composite-service:latest
+  only:
+    refs:
+      - main
+      - develop
+    changes:
+      - services/composite-service/**/*
+      - .gitlab-ci.yml
+  dependencies:
+    - build:composite-service
 
 docker:webapp:
   <<: *docker_build

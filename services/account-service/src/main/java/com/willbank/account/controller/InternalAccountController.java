@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Internal Account Controller
@@ -33,6 +34,17 @@ public class InternalAccountController {
         log.debug("Internal API: Get account {}", id);
         AccountResponse response = accountService.getAccountByIdInternal(id); // Use internal method
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Get all accounts for a customer (internal endpoint)
+     * Used by composite-service to fetch all customer accounts for dashboard
+     */
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<AccountResponse>> getAccountsByCustomerId(@PathVariable Long customerId) {
+        log.debug("Internal API: Get accounts for customer {}", customerId);
+        List<AccountResponse> accounts = accountService.getAccountsByCustomerId(customerId);
+        return ResponseEntity.ok(accounts);
     }
 
     /**

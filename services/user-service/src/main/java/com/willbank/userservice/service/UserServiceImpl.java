@@ -197,8 +197,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("New password must be different from temporary password");
         }
 
-        // 5. Validate new password strength (delegate to PasswordGenerationService if
-        // needed)
+        // 5. Validate new password strength
         if (request.getNewPassword().length() < 12) {
             throw new RuntimeException("Password must be at least 12 characters");
         }
@@ -215,5 +214,12 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         log.info("Password changed successfully for user: {}", request.getEmail());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Optional<User> findByEmail(String email) {
+        log.debug("Finding user by email: {}", email);
+        return userRepository.findByEmail(email);
     }
 }

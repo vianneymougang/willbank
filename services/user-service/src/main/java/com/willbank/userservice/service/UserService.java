@@ -27,4 +27,13 @@ public interface UserService {
     void deleteUser(Long userId);
 
     void changePasswordFirstLogin(com.willbank.userservice.dto.ChangePasswordRequest request);
+
+    /**
+     * Find user by email address
+     * Used internally for authentication
+     * 
+     * @param email User email
+     * @return User entity (not DTO) for internal use
+     */
+    java.util.Optional<com.willbank.userservice.model.User> findByEmail(String email);
 }

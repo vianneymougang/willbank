@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+
+  cloud:
+    config:
+      enabled: false
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+eureka:
+  client:
+    enabled: false
+
+logging:
+  level:
+    com.willbank.transaction: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG

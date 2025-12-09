@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  config:
+    import: optional:configserver:http://config-server:8888
+
+eureka:
+  client:
+    enabled: false
+
+app:
+  security:
+    encryption-key: test-encryption-key-minimum-32-characters-required-for-aes256

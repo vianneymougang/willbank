@@ -1,0 +1,37 @@
+# Database Configuration
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres-auth:5432/willbank_auth
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-validity-seconds: 1800  # 30 minutes
+  refresh-token-validity-seconds: 604800  # 7 days
+
+# Eureka Client Configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    hostname: auth-service
+
+# Logging Configuration
+logging:
+  level:
+    com.willbank.authservice: INFO
+    org.springframework.web: WARN
+
+# Server Configuration
+server:
+  port: 8083

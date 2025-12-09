@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: composite-service
+  config:
+    enabled: false
+    import: optional:configserver:http://localhost:8888
+
+# Test-specific configuration
+eureka:
+  client:
+    enabled: false
+
+server:
+  port: 0 # Random port for tests

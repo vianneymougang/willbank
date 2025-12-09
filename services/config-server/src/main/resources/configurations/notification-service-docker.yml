@@ -1,0 +1,61 @@
+spring:
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 3000
+          max-attempts: 3
+          multiplier: 2.0
+        default-requeue-rejected: false
+  
+  data:
+    mongodb:
+      host: mongodb
+      port: 27017
+      database: notifications
+      username: admin
+      password: admin123
+      authentication-database: admin
+  
+  mail:
+    host: mailtrap
+    port: 25
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+server:
+  port: 8084
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: false
+    instance-id: ${spring.application.name}:${random.value}
+    hostname: notification-service
+
+# WillBank Branding  
+willbank:
+  branding:
+    primary-color: "#1E3A5F"
+    app-name: "WillBank"
+    support-email: "support@willbank.com"
+    from-email: "noreply@willbank.com"
+    website: "https://www.willbank.com"
+
+logging:
+  level:
+    com.willbank.notificationservice: DEBUG
+    org.springframework.amqp: DEBUG

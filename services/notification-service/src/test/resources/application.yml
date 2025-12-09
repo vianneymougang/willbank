@@ -1,0 +1,22 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+      - org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration
+  cloud:
+    config:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+management:
+  health:
+    rabbit:
+      enabled: false
+    mongo:
+      enabled: false

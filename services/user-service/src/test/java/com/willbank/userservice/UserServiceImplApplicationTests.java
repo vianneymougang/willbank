@@ -2,6 +2,7 @@ package com.willbank.userservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 		"spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
 		"eureka.client.enabled=false" // Disable Eureka for tests
 })
+@ActiveProfiles("test")
 class UserServiceImplApplicationTests {
 
 	@Test

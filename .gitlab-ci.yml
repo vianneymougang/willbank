@@ -64,6 +64,7 @@ cache:dependencies:
     paths:
       - services/*/target/*.jar
     expire_in: 1 day
+  tags: [java-maven]
 
 build:config-server:
   <<: *maven_build
@@ -170,7 +171,7 @@ build:webapp:
     changes:
       - clients/webApp/**/*
       - .gitlab-ci.yml
-
+  tags: [node]
 # ==========================================
 # BUILD STAGE - React Native Mobile App
 # ==========================================
@@ -192,6 +193,7 @@ lint:mobileapp:
     changes:
       - clients/mobileApp/**/*
       - .gitlab-ci.yml
+  tags: [node]
 
 audit:mobileapp:
   stage: build
@@ -211,6 +213,7 @@ audit:mobileapp:
     changes:
       - clients/mobileApp/**/*
       - .gitlab-ci.yml
+  tags: [node]
 
 # ==========================================
 # TEST STAGE - Spring Boot Services
@@ -407,6 +410,7 @@ test:webapp:
     changes:
       - clients/webApp/**/*
       - .gitlab-ci.yml
+  tags: [node]
 
 # ==========================================
 # TEST STAGE - React Native Mobile App
@@ -429,6 +433,7 @@ typecheck:mobileapp:
     changes:
       - clients/mobileApp/**/*
       - .gitlab-ci.yml
+  tags: [node]
 
 # ==========================================
 # PACKAGE STAGE - Docker Images
@@ -448,6 +453,7 @@ typecheck:mobileapp:
       - main
       - develop
       - merge_requests
+  tags: [java-maven, node]
 
 docker:config-server:
   <<: *docker_build

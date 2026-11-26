@@ -15,7 +15,7 @@ NC='\033[0m' # No Color
 echo -e "\n${YELLOW}1. Admin Login...${NC}"
 ADMIN_TOKEN=$(curl -s -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "storzenmyav@willbank.com", "password": "admin123"}' \
+  -d '{"email": "admin@willbank.com", "password": "admin123"}' \
   | grep -o '"accessToken":"[^"]*"' | cut -d'"' -f4)
 
 if [ -z "$ADMIN_TOKEN" ]; then
